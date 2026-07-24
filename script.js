@@ -14,6 +14,19 @@ if (navBurger && navLinks) {
   });
 }
 
+// Плавающая кнопка «Открыть приложение» — показываем после того, как страница
+// прокручена на высоту экрана, чтобы не дублировать hero-кнопку сразу же на
+// первом экране. Порог по scrollY, а не по границе .hero — на мобильном хиро
+// (мокап телефона + текст в столбик) может быть заметно выше экрана.
+const floatingCta = document.getElementById('floatingCta');
+if (floatingCta) {
+  const toggleFloatingCta = () => {
+    floatingCta.classList.toggle('visible', window.scrollY > window.innerHeight * 0.6);
+  };
+  toggleFloatingCta();
+  window.addEventListener('scroll', toggleFloatingCta, { passive: true });
+}
+
 // Интерактивное демо «свободно сверх плана»
 const BASE_WEEKS = [
   { w: 'Н31', b: 34200 }, { w: 'Н32', b: 41500 }, { w: 'Н33', b: 19200 }, { w: 'Н34', b: 52400 },
@@ -26,7 +39,15 @@ function fmt(n) {
   return Math.round(n).toLocaleString('ru-RU').replace(/ /g, ' ');
 }
 
+// Компактный формат для узких столбцов на мобильном («22.2к» вместо «22 200»).
+function kFmt(n) {
+  const k = Math.abs(n) / 1000;
+  return (n < 0 ? '−' : '') + (k >= 10 ? Math.round(k) : Math.round(k * 10) / 10) + 'к';
+}
+
 function renderDemo(extra) {
+  const mobile = window.innerWidth <= 640;
+  const maxBarPx = mobile ? 84 : 108;
   let firstNeg = null;
   const bars = BASE_WEEKS.map(x => {
     const v = x.b - extra;
@@ -34,10 +55,10 @@ function renderDemo(extra) {
     const neg = v < 0;
     return {
       w: x.w,
-      h: neg ? 10 : Math.max(5, Math.round((v / MAX_V) * 108)),
+      h: neg ? (mobile ? 8 : 10) : Math.max(mobile ? 4 : 5, Math.round((v / MAX_V) * maxBarPx)),
       color: neg ? 'var(--red-bar-dark)' : 'var(--green-bar-dark)',
       txtColor: neg ? 'var(--red-text-dark)' : 'var(--green-text-dark)',
-      valText: (neg ? '−' : '') + fmt(Math.abs(v)),
+      valText: mobile ? kFmt(v) : (neg ? '−' : '') + fmt(Math.abs(v)),
     };
   });
   const safe = !firstNeg;
@@ -77,4 +98,10 @@ const demoSlider = document.getElementById('demoSlider');
 if (demoSlider) {
   renderDemo(+demoSlider.value);
   demoSlider.addEventListener('input', () => renderDemo(+demoSlider.value));
+  // Пересчитать формат чисел/масштаб баров при переходе через мобильную границу
+  let demoResizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(demoResizeTimer);
+    demoResizeTimer = setTimeout(() => renderDemo(+demoSlider.value), 150);
+  });
 }

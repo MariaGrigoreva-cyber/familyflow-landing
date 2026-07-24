@@ -275,10 +275,12 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
 .footer-links a { color: var(--muted); }
 .footer-links a:hover { color: var(--link); }
 
-/* Responsive */
+/* Кнопка в шапке: на десктопе — полный текст, на мобильном (см. ниже) — короткий "Открыть" */
+.cta-short { display: none; }
+
+/* Responsive — 900px: промежуточные (планшетные) структурные правки, бургер-меню сохраняется */
 @media (max-width: 900px) {
   .hero-inner { grid-template-columns: 1fr; gap: 40px; padding-bottom: 56px; }
-  .hero-phone-wrap { order: -1; }
   .phone { width: 300px; }
   .hero h1 { font-size: 38px; }
   .grid-3 { grid-template-columns: 1fr; }
@@ -299,13 +301,97 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
   .footer-inner { flex-direction: column; align-items: flex-start; }
 }
 
-@media (max-width: 560px) {
+/* Responsive — 640px и уже: отдельный мобильный дизайн (по хендоффу
+   design_handoff.../mobile_version), не просто уменьшенный десктоп.
+   Шапка без бургера и без ссылок — только бренд и короткая кнопка. */
+@media (max-width: 640px) {
   .container, .container-narrow, .container-faq { padding: 0 20px; }
-  .nav-inner { padding: 18px 20px; }
-  .hero-inner { padding: 32px 20px 40px; }
-  .hero h1 { font-size: 32px; }
-  .lead { font-size: 17px; }
-  .phone { width: 260px; }
-  .demo-card { padding: 20px; }
-  .demo-bars { gap: 5px; }
+  .nav-inner { padding: 16px 20px; }
+  .nav-burger { display: none; }
+  .nav-links {
+    display: flex !important; position: static; flex-direction: row; align-items: center;
+    background: none; border-bottom: none; padding: 0; gap: 0;
+  }
+  .nav-links a:not(.btn) { display: none; }
+  .nav-links .btn { margin-top: 0; padding: 9px 16px; border-radius: 11px; font-size: 14px; }
+  .cta-full { display: none; }
+  .cta-short { display: inline; }
+
+  .hero-inner { padding: 28px 20px 56px; gap: 20px; }
+  .hero-copy { gap: 20px; }
+  .eyebrow-pill { font-size: 11px; padding: 6px 12px; }
+  .hero h1 { font-size: 34px; line-height: 1.12; }
+  .lead { font-size: 16.5px; max-width: none; }
+  .hero-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+  .hero-actions .btn { text-align: center; }
+  .hero-tags { justify-content: center; font-size: 11px; gap: 8px 14px; }
+  .hero-phone-wrap { margin-top: 12px; }
+  .phone { width: 320px; border-radius: 42px; padding: 10px; box-shadow: 0 28px 56px -22px rgba(74,42,26,0.35); }
+  .phone-screen { border-radius: 34px; }
+
+  .section { padding: 56px 0; }
+  h2 { font-size: 26px; margin-bottom: 28px; }
+  .section-lead { font-size: 15px; }
+  .grid { gap: 14px; }
+  .card, .feature-card, .step-card { padding: 22px; border-radius: 18px; }
+  .card-title, .feature-card .card-title, .step-card .card-title { font-size: 17px; }
+  .card p, .feature-card p, .step-card p { font-size: 14.5px; }
+
+  .method-grid { gap: 12px; }
+  .method-card { padding: 20px; border-radius: 18px; }
+  .method-accent, .method-yellow, .method-green { border-top: none; border-left: 4px solid; }
+  .method-accent { border-left-color: var(--accent); }
+  .method-yellow { border-left-color: var(--yellow-border); }
+  .method-green { border-left-color: var(--green); }
+  .rule-banner { flex-direction: column; gap: 8px; }
+
+  .demo-card { padding: 22px 18px; }
+  .demo-label { font-size: 11px; }
+  .demo-value { font-size: 26px; }
+  .demo-slider { margin: 14px 0 24px; }
+  .demo-bars { height: 120px; gap: 6px; }
+  .demo-bar-col { height: 120px; gap: 5px; }
+  .demo-bar { border-radius: 5px 5px 2px 2px; }
+  .demo-bar-val { font-size: 9px; }
+  .demo-bar-week { font-size: 8.5px; }
+  .demo-status { padding: 14px 16px; border-radius: 14px; }
+  .demo-status-title { font-size: 14.5px; }
+  .demo-status-text { font-size: 13px; }
+  .demo-footnote { font-size: 10.5px; line-height: 1.6; }
+
+  .faq-item { padding: 16px 18px; border-radius: 14px; }
+  .faq-item summary { font-size: 15.5px; }
+  .faq-item p { font-size: 14.5px; margin-top: 10px; }
+  .faq-list { gap: 10px; }
+
+  .final-cta { padding: 64px 0; }
+  .final-cta-title { font-size: 28px; }
+  .final-cta .btn-xl { display: block; }
+
+  .footer-inner { gap: 18px; }
+  .footer-tag { display: none; }
+  .footer-links { flex-direction: column; gap: 10px; font-size: 14px; }
+  .footer-link-extra { display: none; }
+
+  .floating-cta { left: 20px; right: 20px; bottom: 16px; text-align: center; }
+}
+
+/* Плавающая кнопка — следует за прокруткой, появляется после хиро.
+   Особенно важна на мобильном: там кнопка в шапке спрятана в бургер-меню. */
+.floating-cta {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  padding: 14px 24px;
+  box-shadow: 0 12px 28px -8px rgba(74,42,26,0.45);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.floating-cta.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
