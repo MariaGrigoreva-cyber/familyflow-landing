@@ -1,0 +1,15 @@
+{
+  "name": "familyflow-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Маркетинговый лендинг Семейного потока — статическая страница.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
