@@ -255,6 +255,31 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
 
 .step-num { font-family: 'IBM Plex Mono', monospace; font-size: 32px; font-weight: 700; color: var(--accent); }
 
+/* Pricing */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+.price-card {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 20px; padding: 28px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.price-card-accent { border-color: var(--accent); box-shadow: 0 20px 40px -24px rgba(193,91,61,0.35); }
+.price-card-badge {
+  align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em;
+  font-weight: 600; padding: 5px 10px; border-radius: 8px; background: var(--accent-light); color: var(--link-hover);
+}
+.price-card-badge-green { background: var(--green-light); color: var(--green-text); }
+.price-card-name { font-size: 15px; font-weight: 600; color: var(--text2); }
+.price-card-amount { font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 700; }
+.price-card-amount span { font-size: 15px; font-weight: 400; color: var(--muted); margin-left: 4px; }
+.price-card-period { font-size: 13px; color: var(--muted); line-height: 1.4; }
+.price-features { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.price-features li { font-size: 14.5px; color: var(--text2); line-height: 1.45; padding-left: 22px; position: relative; }
+.price-features li::before {
+  content: '✓'; position: absolute; left: 0; top: 0; color: var(--link);
+  font-family: 'IBM Plex Mono', monospace; font-weight: 700;
+}
+.price-card-btn { text-align: center; margin-top: 8px; }
+.pricing-footnote { margin-top: 28px; font-size: 13px; color: var(--muted); text-align: center; }
+
 /* FAQ */
 .faq-list { display: flex; flex-direction: column; gap: 12px; }
 .faq-item { background: var(--card); border-radius: 16px; padding: 20px 24px; }
@@ -284,6 +309,7 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
   .phone { width: 300px; }
   .hero h1 { font-size: 38px; }
   .grid-3 { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
   .method-grid { grid-template-columns: 1fr; }
   .method-arrow { transform: rotate(90deg); padding: 4px 0; }
   .benefits-grid { grid-template-columns: 1fr; }
@@ -333,9 +359,10 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
   h2 { font-size: 26px; margin-bottom: 28px; }
   .section-lead { font-size: 15px; }
   .grid { gap: 14px; }
-  .card, .feature-card, .step-card { padding: 22px; border-radius: 18px; }
+  .card, .feature-card, .step-card, .price-card { padding: 22px; border-radius: 18px; }
   .card-title, .feature-card .card-title, .step-card .card-title { font-size: 17px; }
   .card p, .feature-card p, .step-card p { font-size: 14.5px; }
+  .price-card-amount { font-size: 30px; }
 
   .method-grid { gap: 12px; }
   .method-card { padding: 20px; border-radius: 18px; }
