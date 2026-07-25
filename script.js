@@ -35,8 +35,10 @@ const BASE_WEEKS = [
 const FREE = 19200;
 const MAX_V = 71600;
 
+// toLocaleString('ru-RU') разделяет тысячи обычным неразрывным пробелом (U+00A0) —
+// в Manrope рядом с tabular-nums он выглядит широковато, меняем на узкий (U+202F).
 function fmt(n) {
-  return Math.round(n).toLocaleString('ru-RU').replace(/ /g, ' ');
+  return Math.round(n).toLocaleString('ru-RU').replace(/ /g, ' ');
 }
 
 // Компактный формат для узких столбцов на мобильном («22.2к» вместо «22 200»).
