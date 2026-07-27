@@ -4,7 +4,12 @@
 // страницы (см. index.html/privacy.html/terms.html/requisites.html).
 (function initCookieBanner() {
   const KEY = 'ff_cookie_consent';
-  const saved = localStorage.getItem(KEY);
+  // На части мобильных браузеров (напр. iOS Safari с «Блокировать все cookie»
+  // в настройках) обращение к localStorage кидает SecurityError — без try/catch
+  // это падение останавливало вообще весь script.js на этой строке, и баннер
+  // не успевал даже отрисоваться (не говоря уже о мобильном меню и демо ниже).
+  let saved = null;
+  try { saved = localStorage.getItem(KEY); } catch {}
   if (saved === 'accepted' || saved === 'declined') return;
 
   const banner = document.createElement('div');
@@ -21,7 +26,10 @@
   document.body.classList.add('has-cookie-banner'); // сдвигает floating-cta, чтобы баннер её не перекрывал
 
   const dismiss = choice => {
-    localStorage.setItem(KEY, choice);
+    // Если сохранить выбор не получилось (см. комментарий выше про заблокированное
+    // хранилище) — баннер просто покажется снова при следующем визите, это не
+    // должно мешать закрыть его и (при согласии) загрузить счётчик сейчас.
+    try { localStorage.setItem(KEY, choice); } catch {}
     banner.remove();
     document.body.classList.remove('has-cookie-banner');
   };
