@@ -11,12 +11,12 @@
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://myfamilyflow.ru/privacy</loc>
+    <loc>https://myfamilyflow.ru/privacy.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://myfamilyflow.ru/terms</loc>
+    <loc>https://myfamilyflow.ru/terms.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
