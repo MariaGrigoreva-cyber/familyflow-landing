@@ -424,3 +424,48 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
   transform: translateY(0);
   pointer-events: auto;
 }
+
+/* Баннер согласия на cookies — см. script.js: initCookieBanner */
+.cookie-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 16px 24px;
+  background: var(--bg-alt);
+  border-top: 1.5px solid var(--border);
+  box-shadow: 0 -12px 28px -12px rgba(74,42,26,0.2);
+}
+.cookie-banner-text {
+  margin: 0;
+  color: var(--text2);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 60ch;
+}
+.cookie-banner-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.cookie-banner-actions .btn {
+  padding: 9px 18px;
+  font-size: 14px;
+}
+/* Пока баннер открыт — приподнимаем плавающую CTA-кнопку, чтобы баннер её не перекрывал. */
+.has-cookie-banner .floating-cta {
+  bottom: 96px;
+}
+
+@media (max-width: 640px) {
+  .cookie-banner { justify-content: flex-start; padding: 14px 18px; }
+  .cookie-banner-actions { width: 100%; }
+  .cookie-banner-actions .btn { flex: 1; text-align: center; }
+  .has-cookie-banner .floating-cta { bottom: 132px; }
+}
