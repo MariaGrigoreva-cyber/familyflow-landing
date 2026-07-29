@@ -1,7 +1,8 @@
 // Баннер согласия на cookies — управляет загрузкой Яндекс.Метрики (у неё включён
-// webvisor, т.е. полная запись сессий), поэтому не грузим счётчик до явного
-// согласия. window.ffLoadMetrika определена инлайновым скриптом в <head> каждой
-// страницы (см. index.html/privacy.html/terms.html/requisites.html).
+// webvisor, т.е. полная запись сессий) и пикселя VK Рекламы, поэтому не грузим
+// счётчики до явного согласия. window.ffLoadMetrika и window.ffLoadVkPixel
+// определены инлайновыми скриптами в <head> каждой страницы (см.
+// index.html/privacy.html/terms.html/requisites.html).
 (function initCookieBanner() {
   const KEY = 'ff_cookie_consent';
   // На части мобильных браузеров (напр. iOS Safari с «Блокировать все cookie»
@@ -17,7 +18,7 @@
   banner.setAttribute('role', 'dialog');
   banner.setAttribute('aria-label', 'Согласие на использование cookies');
   banner.innerHTML = `
-    <p class="cookie-banner-text">Мы используем cookies и Яндекс.Метрику для аналитики посещений. Подробнее — в <a href="/privacy.html">политике конфиденциальности</a>.</p>
+    <p class="cookie-banner-text">Мы используем cookies, Яндекс.Метрику и VK Рекламу для аналитики посещений. Подробнее — в <a href="/privacy.html">политике конфиденциальности</a>.</p>
     <div class="cookie-banner-actions">
       <button type="button" class="btn btn-outline cookie-banner-decline">Отклонить</button>
       <button type="button" class="btn btn-primary cookie-banner-accept">Принять</button>
@@ -36,6 +37,7 @@
   banner.querySelector('.cookie-banner-accept').addEventListener('click', () => {
     dismiss('accepted');
     if (typeof window.ffLoadMetrika === 'function') window.ffLoadMetrika();
+    if (typeof window.ffLoadVkPixel === 'function') window.ffLoadVkPixel();
   });
   banner.querySelector('.cookie-banner-decline').addEventListener('click', () => dismiss('declined'));
 })();
