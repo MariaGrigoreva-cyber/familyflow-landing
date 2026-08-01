@@ -83,6 +83,7 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
 .section-lead-dark { color: var(--text2-dark); max-width: 60ch; margin-bottom: 40px; }
 
 .grid { display: grid; gap: 20px; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
 
 .card, .feature-card, .step-card {
@@ -99,6 +100,20 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
 .card-title { font-size: 18px; font-weight: 600; }
 .feature-card .card-title, .step-card .card-title { font-size: 19px; }
 .card p, .feature-card p, .step-card p { color: var(--text2); line-height: 1.55; font-size: 15px; margin: 0; }
+
+.install-steps { display: flex; flex-direction: column; gap: 10px; }
+.install-step { display: flex; align-items: flex-start; gap: 10px; }
+.install-step-num {
+  flex-shrink: 0; width: 24px; height: 24px; border-radius: 8px;
+  background: var(--accent-light); color: var(--accent);
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.install-step-text { font-size: 14.5px; color: var(--text2); line-height: 1.5; }
+.install-note {
+  margin-top: 24px; background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px 20px; font-size: 14px; color: var(--text2); line-height: 1.6;
+}
 
 .strike {
   font-size: 17px; font-weight: 600; color: var(--muted);
@@ -310,6 +325,7 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
   .hero-inner { grid-template-columns: 1fr; gap: 40px; padding-bottom: 56px; }
   .phone { width: 300px; }
   .hero h1 { font-size: 38px; }
+  .grid-2 { grid-template-columns: 1fr; }
   .grid-3 { grid-template-columns: 1fr; }
   .pricing-grid { grid-template-columns: 1fr; }
   .method-grid { grid-template-columns: 1fr; }
