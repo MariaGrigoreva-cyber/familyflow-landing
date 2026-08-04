@@ -101,7 +101,7 @@ try { if (localStorage.getItem('ff_cookie_consent') === 'accepted') window.ffLoa
       <a href="#features">Возможности</a>
       <a href="#method">Методика</a>
       <a href="#demo">Демо</a>
-      <a href="#how">Как работает</a>
+      <a href="#install">Установка</a>
       <a href="#pricing">Тарифы</a>
       <a href="#faq">FAQ</a>
       <a href="https://t.me/myfamilyflow" target="_blank" rel="noopener">Читать в Telegram</a>
@@ -115,10 +115,10 @@ try { if (localStorage.getItem('ff_cookie_consent') === 'accepted') window.ffLoa
     <div class="hero-copy">
       <div class="eyebrow-pill">ФИНАНСОВЫЙ ДИРЕКТОР СЕМЬИ</div>
       <h1>Семейный бюджет без ежедневного учёта</h1>
-      <p class="lead">Семейный поток планирует выплаты, предупреждает о кассовых разрывах и показывает честную цифру — сколько можно потратить сегодня, не залезая в будущий минус. Один план на всю семью, десять минут раз в неделю.</p>
+      <p class="lead">Весь год перед глазами: доходы, отпускные, обязательные траты и то, что остаётся свободным. Один план на всю семью, десять минут раз в неделю.</p>
       <div class="hero-actions">
         <a href="https://app.myfamilyflow.ru" class="btn btn-primary btn-lg">Попробовать бесплатно</a>
-        <a href="#how" class="btn btn-outline btn-lg">Как это работает</a>
+        <a href="#demo" class="btn btn-outline btn-lg">Посмотреть демо</a>
       </div>
       <div class="hero-tags">
         <span>РАЗ В НЕДЕЛЮ</span><span>·</span><span>ВСЯ СЕМЬЯ В ОДНОМ ПЛАНЕ</span><span>·</span><span>БЕСПЛАТНО</span>
@@ -160,134 +160,141 @@ try { if (localStorage.getItem('ff_cookie_consent') === 'accepted') window.ffLoa
             <div class="phone-piggy-progress"><div class="phone-piggy-progress-fill" style="width:23%"></div></div>
             <div class="phone-piggy-sub">23% от месячного плана · 16 500 ещё не отложено</div>
           </div>
+          <div class="phone-payments">
+            <div class="phone-payments-label">БЛИЖАЙШИЕ ВЫПЛАТЫ</div>
+            <div class="phone-payment-row"><span>Ипотека</span><span>5 авг · −42 000</span></div>
+            <div class="phone-payment-divider"></div>
+            <div class="phone-payment-row"><span>Аванс, Мария</span><span class="phone-payment-positive">10 авг · +64 500</span></div>
+            <div class="phone-payment-divider"></div>
+            <div class="phone-payment-row"><span>Детский сад</span><span>12 авг · −18 400</span></div>
+          </div>
           <div class="phone-tabbar">
             <span>СЕГОДНЯ</span><span>ПОТОК</span><span>БЮДЖЕТ</span><span class="phone-tab-active">ЗДОРОВЬЕ</span><span>ЕЩЁ</span>
           </div>
+          <div class="phone-fab phone-fab-plus">+</div>
+          <div class="phone-fab phone-fab-help">?</div>
         </div>
       </div>
     </div>
   </div>
 </header>
 
-<section class="section section-alt">
+<section class="section section-alt" id="features">
   <div class="container">
-    <div class="eyebrow">ПРОБЛЕМА → РЕШЕНИЕ</div>
-    <h2 class="h2-narrow">Учёт финансов бросают не потому, что он не нужен. А потому, что он выматывает</h2>
-    <div class="grid grid-3">
-      <div class="card">
-        <div class="strike">Записывать каждую трату каждый день</div>
-        <div class="arrow">→</div>
-        <div class="card-title">Методика «раз в неделю»</div>
-        <p>Один короткий сеанс в неделю вместо ежедневной рутины. Учёт перестаёт быть второй работой — и поэтому не бросается через месяц.</p>
-      </div>
-      <div class="card">
-        <div class="strike">«Сколько можно потратить?» — прикидка на глаз</div>
-        <div class="arrow">→</div>
-        <div class="card-title">Честная цифра «свободно сверх плана»</div>
-        <p>Расчёт с учётом всех будущих обязательных трат, а не остаток на карте. Видно, что реально можно потратить прямо сейчас.</p>
-      </div>
-      <div class="card">
-        <div class="strike">Деньги внезапно кончаются до зарплаты</div>
-        <div class="arrow">→</div>
-        <div class="card-title">Прогноз кассового разрыва заранее</div>
-        <p>Семейный поток смотрит на недели вперёд. Если где-то баланс уйдёт в минус — предупредит, пока ещё есть время среагировать.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="features">
-  <div class="container">
-    <div class="eyebrow">ВОЗМОЖНОСТИ</div>
-    <h2>Что делает Семейный поток за вас</h2>
+    <div class="eyebrow">ГЛАВНЫЕ ПРЕИМУЩЕСТВА</div>
+    <h2 class="h2-narrow">Три вещи, ради которых стоит открыть приложение</h2>
     <div class="grid grid-3">
       <div class="feature-card">
-        <div class="feature-num">01 · ПОТОКИ</div>
-        <div class="card-title">Три потока: Защита, Жизнь, Комфорт</div>
-        <p>Весь план раскладывается по трём потокам автоматически при настройке. Сразу видно: обязательное закрыто, на жизнь хватает, а это — на радости.</p>
+        <div class="feature-num">01 · ГОД ЦЕЛИКОМ</div>
+        <div class="card-title">Весь бюджет на год — одним взглядом</div>
+        <p>Зарплаты, премии, отпускные и весь остальной доход уже в плане: видно не только ближайший месяц, а год целиком.</p>
+        <div class="year-bars">
+          <div class="year-bar" style="height:38%"></div>
+          <div class="year-bar" style="height:46%"></div>
+          <div class="year-bar" style="height:41%"></div>
+          <div class="year-bar" style="height:52%"></div>
+          <div class="year-bar" style="height:44%"></div>
+          <div class="year-bar" style="height:60%"></div>
+          <div class="year-bar year-bar-accent" style="height:100%"></div>
+          <div class="year-bar" style="height:57%"></div>
+          <div class="year-bar" style="height:48%"></div>
+          <div class="year-bar" style="height:55%"></div>
+          <div class="year-bar" style="height:50%"></div>
+          <div class="year-bar" style="height:72%"></div>
+        </div>
+        <div class="year-bar-labels">
+          <span>ЯНВ</span><span class="year-bar-labels-highlight">ИЮЛЬ · ОТПУСКНЫЕ +87 000</span><span>ДЕК</span>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">02 · РАСХОДЫ</div>
+        <div class="card-title">Расходы посчитаны — остаток распределён</div>
+        <p>Обязательные траты вычтены заранее, и видно, сколько остаётся свободного — чтобы распределить его осознанно, а не по остатку на карте.</p>
+        <div class="expense-bar">
+          <div class="expense-bar-seg" style="flex:34; background:var(--accent)"></div>
+          <div class="expense-bar-seg" style="flex:41; background:var(--yellow-border)"></div>
+          <div class="expense-bar-seg" style="flex:25; background:var(--green)"></div>
+        </div>
         <div class="feature-chips">
-          <span class="chip chip-accent">ЗАЩИТА</span>
-          <span class="chip chip-yellow">ЖИЗНЬ</span>
-          <span class="chip chip-green">КОМФОРТ</span>
+          <span class="chip chip-accent">ЗАЩИТА 34%</span>
+          <span class="chip chip-yellow">ЖИЗНЬ 41%</span>
+          <span class="chip chip-green">КОМФОРТ 25%</span>
         </div>
       </div>
       <div class="feature-card">
-        <div class="feature-num">02 · КАЛЕНДАРЬ</div>
-        <div class="card-title">Точный календарь выплат</div>
-        <p>Переносы аванса и зарплаты из-за праздников учитываются автоматически — никаких «а придут ли деньги 8 марта». НДФЛ посчитан, суммы показаны чистыми.</p>
-        <div class="feature-illustration illustration-neutral">
-          <span class="strike-mono">СБ 07.03</span>
-          <span class="illustration-arrow">→</span>
-          <span class="illustration-positive">ПТ 06.03 · +87 000 чистыми</span>
-        </div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-num">03 · ПРОГНОЗ</div>
-        <div class="card-title">Кассовый разрыв виден заранее</div>
-        <p>Не просто «сколько денег сейчас», а баланс на недели вперёд. Минус в неделе 34 — предупреждение сегодня, а не сюрприз через месяц.</p>
-        <div class="feature-illustration illustration-warn">⚠ НЕД 34 · −4 300 ₽ · есть время среагировать</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-num">04 · СВОБОДНО</div>
-        <div class="card-title">«Свободно сверх плана»</div>
-        <p>Честная цифра, сколько реально можно потратить прямо сейчас сверх запланированного. Не «на глаз», а расчёт со всеми будущими обязательными тратами.</p>
-        <div class="feature-big-num">+19 200 ₽ <span>МОЖНО СЕЙЧАС</span></div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-num">05 · КОПИЛКА</div>
-        <div class="card-title">Копилка — неприкасаемая</div>
-        <p>Отложенное визуально и в расчётах отделено от «остатка на руках». Накопления на ипотеку или отпуск нельзя случайно посчитать доступными для трат.</p>
-        <div class="feature-illustration illustration-green">
-          <span>🐷 ОТЛОЖЕНО</span>
-          <span class="feature-illustration-bold">184 500 ₽ 🔒</span>
-        </div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-num">06 · СЕМЬЯ</div>
-        <div class="card-title">Один бюджет на всю семью</div>
-        <p>Общий доступ по коду приглашения, синхронизация между устройствами в реальном времени. Оба супруга видят одну картину, а не сверяют два экселя.</p>
-        <div class="feature-illustration illustration-neutral">КОД: <span class="illustration-code">FLW-482</span></div>
+        <div class="feature-num">03 · СЕМЬЯ</div>
+        <div class="card-title">Общая картина для всей семьи</div>
+        <p>Каждый член семьи видит одну и ту же реальную картину бюджета — с любого устройства, без сверки двух экселей.</p>
+        <div class="feature-illustration illustration-neutral">КОД СЕМЬИ: <span class="illustration-code">FLW-482</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section section-alt" id="method">
+<section class="section" id="method">
   <div class="container">
-    <div class="eyebrow">МЕТОДИКА · СИСТЕМА ЧЕТЫРЁХ СЧЕТОВ</div>
-    <h2 class="h2-narrow">Каждый рубль получает назначение в момент прихода</h2>
-    <p class="section-lead">В основе Семейного потока — метод конвертов: весь доход распределяется по целевым счетам сразу, а не тратится «по остатку». Границы трат видны заранее, сбережения откладываются в первую очередь, и вы точно знаете, что обязательное — оплачено.</p>
-    <div class="method-grid">
-      <div class="method-card method-main">
-        <div class="method-label">ГЛАВНЫЙ</div>
-        <div class="card-title">Остаток на счёте</div>
-        <p>Сюда приходит весь доход. Деньги здесь не хранятся — сразу разъезжаются по трём потокам.</p>
+    <div class="eyebrow">МЕТОДИКА</div>
+    <h2 class="h2-narrow h2-tight">Система четырёх счетов</h2>
+    <p class="section-lead">Один ритуал в начале недели: доход приходит на главный счёт, а оттуда по плану расходится на три направления. Тратите вы только то, что перевели.</p>
+    <div class="method-grid-new">
+      <div class="method-schema">
+        <div class="method-schema-income">
+          <div class="method-schema-income-label">ДОХОД</div>
+          <div class="method-schema-income-value">💰 Зарплата семьи</div>
+        </div>
+        <div class="method-schema-connector"></div>
+        <div class="method-schema-arrow"></div>
+        <div class="method-schema-main">
+          <div class="method-schema-main-label">ГЛАВНЫЙ СЧЁТ</div>
+          <div class="method-schema-main-emoji">🏦</div>
+          <div class="method-schema-main-name">Saving</div>
+          <div class="method-schema-main-desc">Все деньги поступают сюда и лежат нетронутыми</div>
+        </div>
+        <div class="method-schema-divider"><span>КАЖДЫЙ ПОНЕДЕЛЬНИК</span></div>
       </div>
-      <div class="method-arrow">→</div>
-      <div class="method-card method-accent">
-        <div class="method-label method-label-accent">1 · ЗАЩИТА</div>
-        <div class="card-title">Резерв и будущее</div>
-        <p>Подушка безопасности, инвестиции, страхование, закрытие кредитов. Откладывается первым — не по остаточному принципу.</p>
+
+      <div class="method-accounts">
+        <div class="method-accounts-grid">
+          <div class="account-card account-card-protect">
+            <div class="account-emoji">🛡️</div>
+            <div class="account-label account-label-protect">ЗАЩИТА · 20%</div>
+            <div class="account-name">Копилка</div>
+            <div class="account-desc">Накопительный счёт: резерв и подушка безопасности.</div>
+          </div>
+          <div class="account-card account-card-life">
+            <div class="account-emoji">🍽️</div>
+            <div class="account-label account-label-life">ЖИЗНЬ · 50%</div>
+            <div class="account-name">Карточный счёт</div>
+            <div class="account-desc">Еда, транспорт, развлечения, кредиты — карта на каждый день.</div>
+          </div>
+          <div class="account-card account-card-comfort">
+            <div class="account-emoji">🛋️</div>
+            <div class="account-label account-label-comfort">КОМФОРТ · 30%</div>
+            <div class="account-name">Счёт до востребования</div>
+            <div class="account-desc">Одежда, дом и ремонт, путешествия — крупные и нерегулярные траты.</div>
+          </div>
+        </div>
+        <div class="transfer-card">
+          <div class="transfer-card-label">ЧТО ПЕРЕВОДИМ В ПОНЕДЕЛЬНИК</div>
+          <div class="transfer-rows">
+            <div class="transfer-row">
+              <div class="transfer-icon transfer-icon-protect">🐷</div>
+              <div class="transfer-text">Копилка → накопительный счёт</div>
+              <div class="transfer-plan transfer-plan-protect">=ПЛАН</div>
+            </div>
+            <div class="transfer-row">
+              <div class="transfer-icon transfer-icon-life">🍽️</div>
+              <div class="transfer-text">Еда, транспорт, кредиты → карточный счёт</div>
+              <div class="transfer-plan transfer-plan-life">=ПЛАН</div>
+            </div>
+            <div class="transfer-row">
+              <div class="transfer-icon transfer-icon-comfort">👗</div>
+              <div class="transfer-text">Одежда, дом → до востребования</div>
+              <div class="transfer-plan transfer-plan-comfort">=ПЛАН</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="method-card method-yellow">
-        <div class="method-label method-label-yellow">2 · ЖИЗНЬ</div>
-        <div class="card-title">Обязательные расходы</div>
-        <p>Коммуналка, продукты, транспорт, лекарства, связь — базовые траты, без которых месяц не пройдёт.</p>
-      </div>
-      <div class="method-card method-green">
-        <div class="method-label method-label-green">3 · КОМФОРТ</div>
-        <div class="card-title">Свободные деньги</div>
-        <p>Рестораны, хобби, путешествия, подарки. Тратится без чувства вины — обязательное уже закрыто.</p>
-      </div>
-    </div>
-    <div class="benefits-grid">
-      <div class="benefit"><span class="benefit-check">✓</span><p><strong>Контроль перерасхода.</strong> Деньги на развлечения закончатся раньше, чем вы случайно потратите ипотечные.</p></div>
-      <div class="benefit"><span class="benefit-check">✓</span><p><strong>Меньше тревожности.</strong> Вы заранее знаете: базовые счета оплачены, подушка формируется.</p></div>
-      <div class="benefit"><span class="benefit-check">✓</span><p><strong>Накопления — автоматом.</strong> Сбережения откладываются в первую очередь, а не «если что-то останется».</p></div>
-    </div>
-    <div class="rule-banner">
-      <span class="rule-label">ЖЁСТКОЕ ПРАВИЛО</span>
-      <p>Переводы из «Защиты» в «Комфорт» запрещены. Комфорт на нуле — развлечения ждут следующего дохода. Семейный поток раскладывает план по этой системе автоматически при настройке.</p>
     </div>
   </div>
 </section>
@@ -316,31 +323,7 @@ try { if (localStorage.getItem('ff_cookie_consent') === 'accepted') window.ffLoa
   </div>
 </section>
 
-<section class="section" id="how">
-  <div class="container">
-    <div class="eyebrow">КАК ЭТО РАБОТАЕТ</div>
-    <h2>Три шага до спокойствия за бюджет</h2>
-    <div class="grid grid-3">
-      <div class="step-card">
-        <div class="step-num">01</div>
-        <div class="card-title">Настройте план один раз</div>
-        <p>Укажите доходы и обязательные траты — Семейный поток сам разложит их по потокам Защита / Жизнь / Комфорт и построит календарь выплат.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">02</div>
-        <div class="card-title">Пригласите семью</div>
-        <p>Отправьте код приглашения — и все смотрят на один и тот же бюджет с любого устройства, изменения видны сразу.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">03</div>
-        <div class="card-title">Заглядывайте раз в неделю</div>
-        <p>Десять минут: сверить факт с планом. Прогноз, свободные деньги и здоровье бюджета приложение считает само.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section section-alt" id="install">
+<section class="section" id="install">
   <div class="container">
     <div class="eyebrow">УСТАНОВКА</div>
     <h2 class="h2-narrow">Поставьте на главный экран — как обычное приложение</h2>
@@ -369,7 +352,7 @@ try { if (localStorage.getItem('ff_cookie_consent') === 'accepted') window.ffLoa
   </div>
 </section>
 
-<section class="section" id="pricing">
+<section class="section section-alt" id="pricing">
   <div class="container">
     <div class="eyebrow">ТАРИФЫ</div>
     <h2 class="h2-narrow">Простой бюджет — бесплатно. Больше контроля — с Pro</h2>
@@ -415,7 +398,7 @@ try { if (localStorage.getItem('ff_cookie_consent') === 'accepted') window.ffLoa
   </div>
 </section>
 
-<section class="section section-alt" id="faq">
+<section class="section" id="faq">
   <div class="container container-faq">
     <div class="eyebrow">FAQ</div>
     <h2>Что обычно спрашивают</h2>
@@ -444,7 +427,7 @@ try { if (localStorage.getItem('ff_cookie_consent') === 'accepted') window.ffLoa
   </div>
 </section>
 
-<section class="section final-cta">
+<section class="section section-alt final-cta">
   <div class="container">
     <h2 class="final-cta-title">Наведите порядок в семейных деньгах за один вечер</h2>
     <p class="final-cta-sub">Бесплатно. Настройка занимает около 15 минут.</p>
