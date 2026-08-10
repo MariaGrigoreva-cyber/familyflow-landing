@@ -5,12 +5,52 @@
 // index.html/privacy.html/terms.html/requisites.html).
 (function initCookieBanner() {
   const KEY = 'ff_cookie_consent';
+  // Согласие живёт в cookie на домене .myfamilyflow.ru, а не в localStorage:
+  // app.myfamilyflow.ru — другой origin, и localStorage у него свой, поэтому
+  // согласие с лендинга туда не долетало и Метрика в приложении не грузилась,
+  // пока пользователь не соглашался ещё раз — часть регистраций из рекламы
+  // не попадала в статистику.
+  const cookieDomain = /(^|\.)myfamilyflow\.ru$/.test(location.hostname) ? '.myfamilyflow.ru' : '';
+  const readConsent = () => {
+    const m = document.cookie.match(/(?:^|; )ff_cookie_consent=([^;]*)/);
+    return m ? decodeURIComponent(m[1]) : null;
+  };
+  const writeConsent = value => {
+    document.cookie = `${KEY}=${value}; path=/; max-age=${180 * 24 * 60 * 60}${cookieDomain ? `; domain=${cookieDomain}` : ''}; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+  };
+
+  // Атрибуция клика по рекламе (yclid/utm_*) — читаем из URL при заходе на
+  // лендинг и, как только есть согласие, кладём в ту же общую cookie
+  // (.myfamilyflow.ru), что и само согласие. app.myfamilyflow.ru — поддомен,
+  // поэтому cookie доедет туда сама, без переписывания ссылок «Попробовать
+  // бесплатно». Приложение прикладывает её к регистрации — без этого нельзя
+  // понять, какая кампания/фраза в Директе реально дала регистрацию, и
+  // невозможно ни оптимизировать ставки, ни загрузить офлайн-конверсии.
+  const AD_PARAM_KEYS = ['yclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  const adParams = {};
+  new URLSearchParams(location.search).forEach((v, k) => { if (AD_PARAM_KEYS.includes(k) && v) adParams[k] = v; });
+  const writeAttribution = () => {
+    if (Object.keys(adParams).length === 0) return;
+    const value = encodeURIComponent(JSON.stringify(Object.assign({ ts: Date.now() }, adParams)));
+    // Короче, чем согласие (30 дней) — окно принятия решения о регистрации
+    // после клика по рекламе разумно ограничить, а не хранить вечно.
+    document.cookie = `ff_attr=${value}; path=/; max-age=${30 * 24 * 60 * 60}${cookieDomain ? `; domain=${cookieDomain}` : ''}; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+  };
+
   // На части мобильных браузеров (напр. iOS Safari с «Блокировать все cookie»
   // в настройках) обращение к localStorage кидает SecurityError — без try/catch
   // это падение останавливало вообще весь script.js на этой строке, и баннер
   // не успевал даже отрисоваться (не говоря уже о мобильном меню и демо ниже).
-  let saved = null;
-  try { saved = localStorage.getItem(KEY); } catch {}
+  let saved = readConsent();
+  if (!saved) {
+    // Миграция со старой per-origin схемы — не переспрашиваем, если человек
+    // уже отвечал на этом origin раньше.
+    try {
+      const legacy = localStorage.getItem(KEY);
+      if (legacy) { writeConsent(legacy); localStorage.removeItem(KEY); saved = legacy; }
+    } catch {}
+  }
+  if (saved === 'accepted') writeAttribution();
   if (saved === 'accepted' || saved === 'declined') return;
 
   const banner = document.createElement('div');
@@ -30,12 +70,13 @@
     // Если сохранить выбор не получилось (см. комментарий выше про заблокированное
     // хранилище) — баннер просто покажется снова при следующем визите, это не
     // должно мешать закрыть его и (при согласии) загрузить счётчик сейчас.
-    try { localStorage.setItem(KEY, choice); } catch {}
+    try { writeConsent(choice); } catch {}
     banner.remove();
     document.body.classList.remove('has-cookie-banner');
   };
   banner.querySelector('.cookie-banner-accept').addEventListener('click', () => {
     dismiss('accepted');
+    writeAttribution();
     if (typeof window.ffLoadMetrika === 'function') window.ffLoadMetrika();
     if (typeof window.ffLoadVkPixel === 'function') window.ffLoadVkPixel();
   });
