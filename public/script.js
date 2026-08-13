@@ -171,11 +171,11 @@ function renderDemo(extra) {
   statusIcon.textContent = safe ? '✓' : '⚠';
 
   if (safe) {
-    statusTitle.textContent = 'Безопасно: трата в пределах «свободно сверх плана»';
-    statusText.textContent = `После траты останется ещё ${fmt(FREE - extra)} ₽ свободных — все обязательные платежи впереди закрыты.`;
+    statusTitle.textContent = 'Можно тратить — укладываетесь в «свободно сверх плана»';
+    statusText.textContent = `После этой траты останется ещё ${fmt(FREE - extra)} ₽ свободных — все платежи впереди уже закрыты.`;
   } else {
-    statusTitle.textContent = `Кассовый разрыв в неделе ${firstNeg.w.slice(1)}: ${fmt(firstNeg.v)} ₽`;
-    statusText.textContent = `Семейный поток предупредил бы об этом сегодня — за ${firstNeg.w === 'Н31' ? '1 неделю' : 'несколько недель'} до минуса, пока есть время среагировать.`;
+    statusTitle.textContent = `На неделе ${firstNeg.w.slice(1)} уйдёте в минус на ${fmt(Math.abs(firstNeg.v))} ₽`;
+    statusText.textContent = `Семейный поток предупредил бы вас уже сегодня — за ${firstNeg.w === 'Н31' ? 'неделю' : 'несколько недель'} до минуса, пока есть время что-то поменять.`;
   }
 
   document.getElementById('demoValue').textContent = fmt(extra) + ' ₽';
