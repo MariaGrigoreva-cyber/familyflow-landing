@@ -300,6 +300,66 @@ try { if (/(?:^|; )ff_cookie_consent=accepted(?:;|$)/.test(document.cookie)) win
   </div>
 </section>
 
+<!-- AI-помощник. Доступ решает сервер (в приложении — GET /ai/status), здесь
+     только рассказ о функции: онбординг из свободного текста и поддержка,
+     знающая экран и контекст бюджета. -->
+<section class="section section-alt" id="ai">
+  <div class="container">
+    <div class="eyebrow">НОВОЕ · БЕТА</div>
+    <h2 class="h2-narrow h2-tight">Настроить бюджет теперь можно словами</h2>
+    <p class="section-lead">Расскажите AI-помощнику про доходы и обязательные траты обычным текстом или голосом — он соберёт из этого черновик бюджета. Вы проверяете и правите: в бюджет попадает только то, что подтвердили сами.</p>
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="feature-num">01 · ПЕРВАЯ НАСТРОЙКА</div>
+        <div class="card-title">Рассказали словами — получили черновик</div>
+        <p>Вместо того чтобы заводить каждую категорию руками, вы просто описываете ситуацию семьи. Помощник разбирает её на доходы и статьи расходов.</p>
+        <div class="ai-quote">
+          <div class="ai-quote-label">ВЫ ГОВОРИТЕ ИЛИ ПИШЕТЕ</div>
+          <div class="ai-quote-text">«Зарплата 90 тысяч на руки, 10-го и 25-го. Муж получает 75 в конце месяца. Ипотека 42, садик 18 400, продукты примерно 35 в месяц»</div>
+        </div>
+        <div class="ai-arrow" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="4" x2="12" y2="19"></line><polyline points="6 13 12 19 18 13"></polyline></svg>
+        </div>
+        <div class="ai-draft">
+          <div class="ai-draft-label">ЧЕРНОВИК — МОЖНО ПРАВИТЬ ДО СОХРАНЕНИЯ</div>
+          <div class="ai-draft-row"><span>Зарплата, Мария · 2 раза в месяц</span><span class="ai-draft-sum ai-draft-sum-in">+90 000</span></div>
+          <div class="ai-draft-row"><span>Зарплата, супруг · раз в месяц</span><span class="ai-draft-sum ai-draft-sum-in">+75 000</span></div>
+          <div class="ai-draft-row"><span>Ипотека · Защита</span><span class="ai-draft-sum">−42 000</span></div>
+          <div class="ai-draft-row"><span>Детский сад · Жизнь</span><span class="ai-draft-sum">−18 400</span></div>
+          <div class="ai-draft-row"><span>Продукты · Жизнь</span><span class="ai-draft-sum">−35 000</span></div>
+        </div>
+        <div class="feature-chips">
+          <span class="chip chip-accent">ТЕКСТ ИЛИ ГОЛОС</span>
+          <span class="chip chip-green">НИЧЕГО НЕ СОХРАНЯЕТСЯ БЕЗ ВАС</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="feature-num">02 · ПОМОЩЬ ВНУТРИ ПРИЛОЖЕНИЯ</div>
+        <div class="card-title">Спросите прямо на экране, где непонятно</div>
+        <p>Помощник знает, на каком вы экране и что происходит в вашем бюджете, — поэтому отвечает не общими словами, а про вашу ситуацию и конкретные кнопки.</p>
+        <div class="ai-chat">
+          <div class="ai-msg ai-msg-you">Куда нажать, чтобы снять деньги с копилки?</div>
+          <div class="ai-msg ai-msg-bot">На экране «Сегодня» — действие «Снять с копилки». Сумма вернётся к деньгам на руках, а план на неделю пересчитается сразу.</div>
+          <div class="ai-msg ai-msg-you">Почему в копилке меньше, чем я откладывала?</div>
+          <div class="ai-msg ai-msg-bot">Похоже, часть суммы уже снимали в этом месяце. Если цифры всё равно не сходятся — это лучше разобрать живому человеку, напишите на support@myfamilyflow.ru.</div>
+        </div>
+        <div class="feature-chips">
+          <span class="chip chip-accent">ЗНАЕТ ЭКРАН И ВАШ БЮДЖЕТ</span>
+          <span class="chip chip-yellow">СПОРНОЕ — ПЕРЕДАЁТ В ПОДДЕРЖКУ</span>
+        </div>
+      </div>
+    </div>
+    <div class="ai-note">
+      <div class="ai-note-copy">
+        <span class="chip chip-accent">БЕТА</span>
+        <div class="card-title">Помощник ещё учится — и честно об этом предупреждает</div>
+        <p>Он может ошибиться в цифрах, не даёт инвестиционных советов и ничего не решает за вас: любой черновик вы проверяете и правите перед сохранением. Число запросов в сутки ограничено.</p>
+      </div>
+      <a href="https://app.myfamilyflow.ru" rel="nofollow" class="btn btn-primary btn-lg">Попробовать бесплатно</a>
+    </div>
+  </div>
+</section>
+
 <section class="section section-dark" id="demo">
   <div class="container container-narrow">
     <div class="eyebrow eyebrow-dark">ПОПРОБУЙТЕ ПРЯМО ЗДЕСЬ</div>
@@ -327,11 +387,29 @@ try { if (/(?:^|; )ff_cookie_consent=accepted(?:;|$)/.test(document.cookie)) win
 <section class="section" id="install">
   <div class="container">
     <div class="eyebrow">УСТАНОВКА</div>
-    <h2 class="h2-narrow">Поставьте на главный экран — как обычное приложение</h2>
-    <p class="section-lead">Без App Store и Google Play: пара нажатий — и иконка Семейного потока на экране, с push-уведомлениями о выплатах.</p>
-    <div class="grid grid-2">
+    <h2 class="h2-narrow">Теперь есть в RuStore — или ставьте прямо из браузера</h2>
+    <p class="section-lead">На Android проще всего поставить из RuStore: обычная установка и автоматические обновления. На iPhone — по-прежнему пара нажатий в Safari, без App Store.</p>
+    <div class="install-grid">
+      <div class="card store-card">
+        <span class="chip chip-accent store-badge">НОВОЕ · ANDROID</span>
+        <div class="store-head">
+          <span class="store-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16l-1 3.2a2.6 2.6 0 0 1-5 .3 2.6 2.6 0 0 1-5 0 2.6 2.6 0 0 1-5-.3L4 7z"></path><path d="M5.4 12.4V19a1 1 0 0 0 1 1h11.2a1 1 0 0 0 1-1v-6.6"></path><path d="M10 20v-4.6h4V20"></path></svg>
+          </span>
+          <span class="card-title">Скачать в RuStore</span>
+        </div>
+        <p>Ищите «Семейный поток» в RuStore или откройте страницу приложения по кнопке. Дальше всё как с любым приложением: установка, иконка на экране, обновления сами.</p>
+        <div class="install-steps">
+          <div class="install-step"><span class="install-step-num">1</span><span class="install-step-text">Откройте RuStore на телефоне</span></div>
+          <div class="install-step"><span class="install-step-num">2</span><span class="install-step-text">Найдите «Семейный поток» в поиске</span></div>
+          <div class="install-step"><span class="install-step-num">3</span><span class="install-step-text">Нажмите «Установить» — и всё</span></div>
+        </div>
+        <!-- Когда будет готов официальный бейдж RuStore из их брендбука — заменить эту кнопку на него. -->
+        <a href="https://www.rustore.ru/catalog/app/ru.myfamilyflow.app" target="_blank" rel="noopener" class="btn btn-primary btn-lg store-btn">Открыть в RuStore</a>
+      </div>
       <div class="step-card">
         <div class="card-title">📱 iPhone (Safari)</div>
+        <p>В App Store приложения пока нет — ставится на главный экран прямо из Safari.</p>
         <div class="install-steps">
           <div class="install-step"><span class="install-step-num">1</span><span class="install-step-text">Откройте <a href="https://app.myfamilyflow.ru" rel="nofollow">app.myfamilyflow.ru</a> в Safari</span></div>
           <div class="install-step"><span class="install-step-num">2</span><span class="install-step-text">Нажмите значок «Поделиться» (квадрат со стрелкой вверх)</span></div>
@@ -340,6 +418,7 @@ try { if (/(?:^|; )ff_cookie_consent=accepted(?:;|$)/.test(document.cookie)) win
       </div>
       <div class="step-card">
         <div class="card-title">🤖 Android (Chrome)</div>
+        <p>Если RuStore не установлен — работает и старый способ, прямо из браузера.</p>
         <div class="install-steps">
           <div class="install-step"><span class="install-step-num">1</span><span class="install-step-text">Откройте <a href="https://app.myfamilyflow.ru" rel="nofollow">app.myfamilyflow.ru</a> в Chrome</span></div>
           <div class="install-step"><span class="install-step-num">2</span><span class="install-step-text">В подсказке снизу нажмите «Установить» (или ⋮ → «Установить приложение»)</span></div>
@@ -483,6 +562,7 @@ try { if (/(?:^|; )ff_cookie_consent=accepted(?:;|$)/.test(document.cookie)) win
     </div>
     <div class="footer-links">
       <a href="https://app.myfamilyflow.ru" rel="nofollow">Приложение</a>
+      <a href="https://www.rustore.ru/catalog/app/ru.myfamilyflow.app" target="_blank" rel="noopener">Скачать в RuStore</a>
       <a href="/blog/">Блог</a>
       <a href="#features" class="footer-link-extra">Возможности</a>
       <a href="#install" class="footer-link-extra">Установка на телефон</a>
