@@ -545,3 +545,96 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
   .cookie-banner-actions .btn { flex: 1; text-align: center; }
   .has-cookie-banner .floating-cta { bottom: 132px; }
 }
+
+/* ─── Блог ────────────────────────────────────────────────────────────────
+   Статьи генерируются скриптом (npm run blog, см. scripts/generate-blog.js)
+   по шаблону templates/article.html. Отдельного файла стилей у блога нет —
+   он пользуется этой же дизайн-системой: токенами, .container, .btn, .nav,
+   .footer. Карточки .blog-card используются и на /blog/, и в блоке
+   «Полезное о семейных финансах» на главной. */
+
+.blog-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px 24px; }
+/* Раскладка зависит от числа статей (класс проставляет scripts/blog/render.js):
+   одна статья — крупная карточка, две — две колонки, три и больше — сетка выше. */
+.blog-cards-featured { grid-template-columns: minmax(0, 820px); }
+.blog-cards-duo { grid-template-columns: repeat(2, 1fr); }
+.blog-cards-featured .blog-card-link { gap: 18px; }
+.blog-cards-featured .blog-card-title { font-size: 26px; line-height: 1.25; letter-spacing: -0.02em; }
+.blog-cards-featured .blog-card-excerpt { font-size: 17px; }
+/* Единственная статья в блоке на главной: карточка заметная, но компактнее
+   featured-карточки на /blog/ — главная не должна превращаться в блог. */
+.blog-teaser .blog-cards-featured { grid-template-columns: minmax(0, 700px); }
+.blog-teaser .blog-cards-featured .blog-card-title { font-size: 23px; }
+.blog-teaser .blog-cards-featured .blog-card-excerpt { font-size: 16px; }
+.blog-card-link { display: flex; flex-direction: column; gap: 14px; color: inherit; }
+.blog-card-link:hover { color: inherit; }
+.blog-card-image {
+  width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;
+  border-radius: 16px; background: var(--bg-alt);
+}
+.blog-card-date { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.1em; color: var(--muted2); }
+.blog-card-title { font-size: 19px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
+.blog-card-link:hover .blog-card-title { color: var(--link); }
+.blog-card-excerpt {
+  color: var(--text2); font-size: 15px; line-height: 1.55;
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+}
+.blog-card-more { font-size: 14.5px; font-weight: 600; color: var(--link); margin-top: auto; }
+.blog-card-link > * { margin: 0; }
+.blog-empty { color: var(--text2); font-size: 17px; line-height: 1.6; }
+
+/* Страница статьи */
+.article-section { padding-top: 56px; }
+.article-title { font-size: 42px; line-height: 1.12; letter-spacing: -0.02em; font-weight: 700; text-wrap: balance; margin-bottom: 18px; }
+.article-lead { font-size: 19px; line-height: 1.55; color: var(--text2); margin-bottom: 16px; }
+.article-meta { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted2); margin-bottom: 32px; }
+.article-hero { width: 100%; height: auto; border-radius: 20px; margin-bottom: 44px; }
+
+.article-body { font-size: 17.5px; line-height: 1.72; color: var(--text); }
+.article-body h2 { font-size: 27px; line-height: 1.25; margin: 48px 0 16px; }
+.article-body h3 { font-size: 21px; line-height: 1.3; font-weight: 600; margin: 34px 0 12px; letter-spacing: -0.01em; }
+.article-body p { margin: 0 0 22px; }
+.article-body ul, .article-body ol { margin: 0 0 26px; padding-left: 26px; color: var(--text); }
+.article-body li { margin: 8px 0; }
+.article-body blockquote {
+  margin: 32px 0; padding: 20px 24px; background: var(--accent-light);
+  border-left: 3px solid var(--accent); border-radius: 0 14px 14px 0;
+  font-size: 17px; color: #4A3A32;
+}
+.article-body blockquote p:last-child { margin-bottom: 0; }
+.article-body figure { margin: 40px 0; }
+.article-body figure img { width: 100%; height: auto; border-radius: 16px; }
+
+.article-cta {
+  margin-top: 56px; padding: 32px; background: var(--card);
+  border: 1.5px solid var(--border); border-radius: 20px;
+}
+.article-cta-title { font-size: 26px; line-height: 1.25; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+.article-cta-text { color: var(--text2); font-size: 16px; line-height: 1.6; margin-bottom: 24px; }
+.article-back { display: inline-block; margin-top: 40px; font-size: 15px; color: var(--muted); }
+
+@media (max-width: 900px) {
+  .blog-cards { grid-template-columns: 1fr; gap: 30px; }
+  .blog-cards-featured, .blog-cards-duo { grid-template-columns: 1fr; }
+  .blog-cards-featured .blog-card-link { gap: 14px; }
+  .blog-cards-featured .blog-card-title { font-size: 19px; line-height: 1.3; letter-spacing: -0.01em; }
+  .blog-cards-featured .blog-card-excerpt { font-size: 15px; }
+  .blog-teaser .blog-cards-featured { grid-template-columns: 1fr; }
+  .blog-teaser .blog-cards-featured .blog-card-title { font-size: 19px; }
+  .blog-teaser .blog-cards-featured .blog-card-excerpt { font-size: 15px; }
+  .article-title { font-size: 32px; }
+}
+
+@media (max-width: 640px) {
+  .article-section { padding-top: 32px; }
+  .article-title { font-size: 28px; }
+  .article-lead { font-size: 17px; }
+  .article-hero { border-radius: 14px; margin-bottom: 32px; }
+  .article-body { font-size: 16.5px; }
+  .article-body h2 { font-size: 23px; margin-top: 38px; }
+  .article-body h3 { font-size: 19px; }
+  .article-cta { padding: 24px 22px; }
+  .article-cta-title { font-size: 22px; }
+}
+.blog-teaser-more { margin-top: 36px; }

@@ -104,6 +104,7 @@ try { if (/(?:^|; )ff_cookie_consent=accepted(?:;|$)/.test(document.cookie)) win
       <a href="#install">Установка</a>
       <a href="#pricing">Тарифы</a>
       <a href="#faq">FAQ</a>
+      <a href="/blog/">Блог</a>
       <a href="https://t.me/myfamilyflow" target="_blank" rel="noopener">Читать в Telegram</a>
       <a href="https://app.myfamilyflow.ru" rel="nofollow" class="btn btn-primary"><span class="cta-full">Попробовать бесплатно</span><span class="cta-short">Бесплатно</span></a>
     </div>
@@ -435,6 +436,42 @@ try { if (/(?:^|; )ff_cookie_consent=accepted(?:;|$)/.test(document.cookie)) win
   </div>
 </section>
 
+<!-- Блок «Полезное о семейных финансах». Содержимое между маркерами
+     пересобирается автоматически при npm run blog (scripts/generate-blog.js →
+     templates/home-teaser.html). Руками сюда не пишем: перезапишется.
+     Пока статей нет, между маркерами пусто и блока на странице не видно. -->
+<!-- BLOG_TEASER:START -->
+<section class="section blog-teaser" id="blog">
+  <div class="container">
+    <div class="eyebrow">БЛОГ</div>
+    <h2 class="h2-tight">Полезное о семейных финансах</h2>
+    <p class="section-lead">Короткие разборы о том, почему деньги заканчиваются раньше месяца и что с этим делать.</p>
+    <div class="blog-cards blog-cards-featured">
+      <article class="blog-card">
+        <a class="blog-card-link" href="/blog/pochemu-ne-hvataet-deneg-pri-normalnoy-zarplate/">
+          <img
+            class="blog-card-image"
+            src="/blog/pochemu-ne-hvataet-deneg-pri-normalnoy-zarplate/hero.webp"
+            alt="Семейная пара дома планирует расходы за кухонным столом"
+            width="1536"
+            height="864"
+            loading="lazy"
+          >
+          <div class="blog-card-date">2 СЕНТЯБРЯ 2026</div>
+          <h2 class="blog-card-title">Почему денег не хватает даже при нормальной зарплате</h2>
+          <p class="blog-card-excerpt">Нормальная зарплата не всегда означает ощущение достатка. Часто проблема не в лишних тратах, а в том, что деньги приходят и уходят в разное время, а будущие обязательства остаются невидимыми.</p>
+          <span class="blog-card-more">Читать статью →</span>
+        </a>
+      </article>
+    </div>
+    <div class="blog-teaser-more">
+      <a href="/blog/" class="btn btn-outline">Все статьи →</a>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG_TEASER:END -->
+
 <footer class="footer">
   <div class="container footer-inner">
     <div class="footer-brand">
@@ -446,6 +483,7 @@ try { if (/(?:^|; )ff_cookie_consent=accepted(?:;|$)/.test(document.cookie)) win
     </div>
     <div class="footer-links">
       <a href="https://app.myfamilyflow.ru" rel="nofollow">Приложение</a>
+      <a href="/blog/">Блог</a>
       <a href="#features" class="footer-link-extra">Возможности</a>
       <a href="#install" class="footer-link-extra">Установка на телефон</a>
       <a href="#faq" class="footer-link-extra">FAQ</a>

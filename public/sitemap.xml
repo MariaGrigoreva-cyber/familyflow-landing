@@ -20,4 +20,12 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+  <url>
+    <loc>https://myfamilyflow.ru/blog/</loc>
+    <lastmod>2026-09-02</lastmod>
+  </url>
+  <url>
+    <loc>https://myfamilyflow.ru/blog/pochemu-ne-hvataet-deneg-pri-normalnoy-zarplate/</loc>
+    <lastmod>2026-09-02</lastmod>
+  </url>
 </urlset>

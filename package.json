@@ -4,7 +4,9 @@
   "private": true,
   "description": "Маркетинговый лендинг Семейного потока — статическая страница.",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "blog": "node scripts/generate-blog.js",
+    "blog:rebuild": "node scripts/rebuild-blog.js"
   },
   "dependencies": {
     "compression": "^1.8.1",
@@ -12,5 +14,11 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "dotenv": "^17.4.2",
+    "openai": "^7.8.0",
+    "sanitize-html": "^2.17.7",
+    "sharp": "^0.35.4"
   }
 }

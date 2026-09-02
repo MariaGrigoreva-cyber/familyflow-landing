@@ -1,3 +1,8 @@
 node_modules/
 .DS_Store
 .claude/
+
+# Ключ OpenAI для генератора блога (npm run blog) — только локально
+.env
+.env.local
+.env.*.local
