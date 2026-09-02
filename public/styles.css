@@ -553,18 +553,18 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
    .footer. Карточки .blog-card используются и на /blog/, и в блоке
    «Полезное о семейных финансах» на главной. */
 
-.blog-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px 24px; }
+.blog-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 44px 28px; }
 /* Раскладка зависит от числа статей (класс проставляет scripts/blog/render.js):
    одна статья — крупная карточка, две — две колонки, три и больше — сетка выше. */
-.blog-cards-featured { grid-template-columns: minmax(0, 820px); }
+.blog-cards-featured { grid-template-columns: minmax(0, 680px); }
 .blog-cards-duo { grid-template-columns: repeat(2, 1fr); }
 .blog-cards-featured .blog-card-link { gap: 18px; }
-.blog-cards-featured .blog-card-title { font-size: 26px; line-height: 1.25; letter-spacing: -0.02em; }
-.blog-cards-featured .blog-card-excerpt { font-size: 17px; }
+.blog-cards-featured .blog-card-title { font-size: 24px; line-height: 1.25; letter-spacing: -0.02em; }
+.blog-cards-featured .blog-card-excerpt { font-size: 16.5px; max-width: 60ch; }
 /* Единственная статья в блоке на главной: карточка заметная, но компактнее
    featured-карточки на /blog/ — главная не должна превращаться в блог. */
-.blog-teaser .blog-cards-featured { grid-template-columns: minmax(0, 700px); }
-.blog-teaser .blog-cards-featured .blog-card-title { font-size: 23px; }
+.blog-teaser .blog-cards-featured { grid-template-columns: minmax(0, 600px); }
+.blog-teaser .blog-cards-featured .blog-card-title { font-size: 22px; }
 .blog-teaser .blog-cards-featured .blog-card-excerpt { font-size: 16px; }
 .blog-card-link { display: flex; flex-direction: column; gap: 14px; color: inherit; }
 .blog-card-link:hover { color: inherit; }
@@ -584,30 +584,36 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
 .blog-card-link > * { margin: 0; }
 .blog-empty { color: var(--text2); font-size: 17px; line-height: 1.6; }
 
-/* Страница статьи */
-.article-section { padding-top: 56px; }
-.article-title { font-size: 42px; line-height: 1.12; letter-spacing: -0.02em; font-weight: 700; text-wrap: balance; margin-bottom: 18px; }
-.article-lead { font-size: 19px; line-height: 1.55; color: var(--text2); margin-bottom: 16px; }
-.article-meta { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted2); margin-bottom: 32px; }
-.article-hero { width: 100%; height: auto; border-radius: 20px; margin-bottom: 44px; }
+/* Страница статьи.
+   Ширина колонки задана здесь, а не через .container-narrow, чтобы не трогать
+   этот токен на остальных страницах лендинга: 880px давали 75 знаков в строке
+   и hero почти в пол-экрана. Единая шкала вертикальных отступов ниже кратна 4:
+   16 / 20 / 24 / 28 / 36 / 40 / 48 / 56 / 64. */
+.article-section .container-narrow { max-width: 780px; }
+.article-section { padding-top: 64px; }
+.article-section .eyebrow { margin-bottom: 16px; }
+.article-title { font-size: 40px; line-height: 1.14; letter-spacing: -0.02em; font-weight: 700; text-wrap: balance; margin-bottom: 16px; }
+.article-lead { font-size: 19px; line-height: 1.6; color: var(--text2); margin-bottom: 20px; }
+.article-meta { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--muted2); margin-bottom: 40px; }
+.article-hero { width: 100%; height: auto; border-radius: 18px; margin-bottom: 48px; }
 
 .article-body { font-size: 17.5px; line-height: 1.72; color: var(--text); }
-.article-body h2 { font-size: 27px; line-height: 1.25; margin: 48px 0 16px; }
-.article-body h3 { font-size: 21px; line-height: 1.3; font-weight: 600; margin: 34px 0 12px; letter-spacing: -0.01em; }
-.article-body p { margin: 0 0 22px; }
-.article-body ul, .article-body ol { margin: 0 0 26px; padding-left: 26px; color: var(--text); }
+.article-body h2 { font-size: 26px; line-height: 1.3; margin: 56px 0 16px; }
+.article-body h3 { font-size: 20px; line-height: 1.35; font-weight: 600; margin: 36px 0 12px; letter-spacing: -0.01em; }
+.article-body p { margin: 0 0 24px; }
+.article-body ul, .article-body ol { margin: 0 0 28px; padding-left: 26px; color: var(--text); }
 .article-body li { margin: 8px 0; }
 .article-body blockquote {
-  margin: 32px 0; padding: 20px 24px; background: var(--accent-light);
+  margin: 40px 0; padding: 22px 26px; background: var(--accent-light);
   border-left: 3px solid var(--accent); border-radius: 0 14px 14px 0;
   font-size: 17px; color: #4A3A32;
 }
 .article-body blockquote p:last-child { margin-bottom: 0; }
-.article-body figure { margin: 40px 0; }
+.article-body figure { margin: 48px 0; }
 .article-body figure img { width: 100%; height: auto; border-radius: 16px; }
 
 .article-cta {
-  margin-top: 56px; padding: 32px; background: var(--card);
+  margin-top: 64px; padding: 32px 36px; background: var(--card);
   border: 1.5px solid var(--border); border-radius: 20px;
 }
 .article-cta-title { font-size: 26px; line-height: 1.25; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
@@ -631,10 +637,19 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
   .article-title { font-size: 28px; }
   .article-lead { font-size: 17px; }
   .article-hero { border-radius: 14px; margin-bottom: 32px; }
+  .article-body figure { margin: 36px 0; }
+  .article-cta { margin-top: 48px; }
   .article-body { font-size: 16.5px; }
-  .article-body h2 { font-size: 23px; margin-top: 38px; }
+  .article-body h2 { font-size: 22px; margin-top: 40px; }
   .article-body h3 { font-size: 19px; }
   .article-cta { padding: 24px 22px; }
   .article-cta-title { font-size: 22px; }
 }
 .blog-teaser-more { margin-top: 36px; }
+
+/* Шапка страниц блога: ссылок в ней всего две, и общий для лендинга gap 28px
+   читается тесно. Трогаем только десктоп — на 900px и ниже меню выпадающее. */
+@media (min-width: 901px) {
+  .nav:has(+ .article-section) .nav-inner { padding-top: 26px; padding-bottom: 26px; }
+  .nav:has(+ .article-section) .nav-links { gap: 36px; }
+}
