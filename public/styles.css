@@ -663,7 +663,7 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
    пользователя, черновик бюджета и диалог с поддержкой. */
 
 .ai-quote {
-  margin-top: 6px; background: var(--bg); border: 1.5px dashed var(--border-dashed);
+  margin-top: 8px; background: var(--bg); border: 1.5px dashed var(--border-dashed);
   border-radius: 14px; padding: 16px 18px;
 }
 .ai-quote-label {
@@ -671,7 +671,7 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
   color: var(--muted); margin-bottom: 8px;
 }
 .ai-quote-text { font-size: 15px; line-height: 1.5; }
-.ai-arrow { display: flex; justify-content: center; padding: 2px 0; color: var(--accent); }
+.ai-arrow { display: flex; justify-content: center; margin: -4px 0; color: var(--accent); }
 
 .ai-draft {
   background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px;
@@ -685,7 +685,7 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
 .ai-draft-sum { font-family: var(--font-num); font-weight: 700; white-space: nowrap; }
 .ai-draft-sum-in { color: var(--green-text); }
 
-.ai-chat { margin-top: 6px; display: flex; flex-direction: column; gap: 12px; }
+.ai-chat { margin-top: 8px; display: flex; flex-direction: column; gap: 12px; }
 .ai-msg { font-size: 15px; line-height: 1.5; padding: 14px 16px; }
 .ai-msg-you {
   align-self: flex-end; max-width: 88%; background: var(--accent-light);
@@ -702,7 +702,7 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
   padding: 24px 28px; display: flex; align-items: center; justify-content: space-between;
   gap: 28px; flex-wrap: wrap; box-shadow: 0 20px 40px -24px rgba(193,91,61,0.35);
 }
-.ai-note-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; max-width: 62ch; }
+.ai-note-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; max-width: 62ch; }
 .ai-note-copy p { margin: 0; color: var(--text2); font-size: 15px; line-height: 1.55; }
 .ai-note .btn { white-space: nowrap; }
 
@@ -721,7 +721,8 @@ h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 700; margin-bottom: 
 .store-btn { display: block; margin-top: auto; text-align: center; }
 
 @media (max-width: 900px) {
-  .install-grid { grid-template-columns: 1fr; }
+  .install-grid { grid-template-columns: 1fr; gap: 28px; }
+  #ai .grid-2 { gap: 28px; }
   .ai-note { flex-direction: column; align-items: stretch; gap: 20px; }
   .ai-note .btn { text-align: center; }
 }
