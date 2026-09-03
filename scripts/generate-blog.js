@@ -21,6 +21,7 @@ require('dotenv').config({ path: path.join(ROOT, '.env'), quiet: true });
 const { generateArticle } = require('./blog/text');
 const { generateImage } = require('./blog/images');
 const render = require('./blog/render');
+const sourceStore = require('./blog/source');
 const { updateSitemapXml, readSitemap } = require('./blog/sitemap');
 
 const DEFAULTS = {
@@ -35,6 +36,8 @@ const DEFAULTS = {
 const PATHS = {
   systemPrompt: path.join(ROOT, 'prompts', 'blog', 'system.txt'),
   imageStyle: path.join(ROOT, 'prompts', 'blog', 'image-style.txt'),
+  // Требования к соцсетям лежат отдельно: их читает и npm run blog:social.
+  socialPrompt: path.join(ROOT, 'prompts', 'blog', 'social.txt'),
   template: path.join(ROOT, 'templates', 'article.html'),
   blogIndexTemplate: path.join(ROOT, 'templates', 'blog-index.html'),
   homeTeaserTemplate: path.join(ROOT, 'templates', 'home-teaser.html'),
@@ -44,6 +47,8 @@ const PATHS = {
   blogIndexHtml: path.join(ROOT, 'public', 'blog', 'index.html'),
   sitemap: path.join(ROOT, 'public', 'sitemap.xml'),
   homeIndexHtml: path.join(ROOT, 'public', 'index.html'),
+  // Canonical source статьи. Всё в public/blog — производное от него.
+  contentBlogDir: path.join(ROOT, 'content', 'blog'),
 };
 
 const log = (message) => console.log(message);
@@ -140,6 +145,36 @@ function readEnv() {
   };
 }
 
+// Соцпакет крупный, целиком в терминал не влезает и не нужен: показываем
+// объёмы и начало каждого текста, чтобы на dry-run было видно, что получилось.
+function printSocialSummary(social) {
+  if (!social) {
+    log('Соцсети: пакет не сгенерирован');
+    return;
+  }
+  const head = (text, n = 90) => String(text).replace(/\s+/g, ' ').slice(0, n) + (String(text).length > n ? '…' : '');
+
+  log('Соцсети:');
+  log(`  • telegram — ${social.telegram.length} знаков: ${head(social.telegram)}`);
+  log(`  • threads — ${social.threads.length} знаков: ${head(social.threads)}`);
+  log(`  • vk — ${social.vk.length} знаков: ${head(social.vk)}`);
+
+  const slides = social.instagram?.carousel?.slides || [];
+  const longest = slides.reduce((max, slide) => Math.max(max, String(slide.text).length), 0);
+  log(`  • instagram — карусель «${social.instagram?.carousel?.title || '—'}», ${slides.length} слайдов, самый длинный ${longest} симв.`);
+  for (const slide of slides) log(`      ${slide.number}. ${head(slide.text, 70)}`);
+  log(`      caption — ${social.instagram?.caption?.length || 0} знаков: ${head(social.instagram?.caption || '')}`);
+
+  const video = social.short_video || {};
+  log(`  • short video — ${video.duration_seconds} с, ${(video.script || []).length} сцен`);
+  log(`      hook: ${head(video.hook || '', 70)}`);
+  for (const scene of video.script || []) {
+    log(`      ${scene.time} · ${head(scene.voice, 60)}`);
+    log(`         кадр: ${head(scene.visual, 60)}${scene.overlay ? ` · надпись: «${scene.overlay}»` : ''}`);
+  }
+  log(`      cta: ${head(video.cta || '', 70)}`);
+}
+
 function printDryRun(article, env) {
   log('');
   log('РЕЖИМ DRY RUN — файлы не создаются, картинки не генерируются.');
@@ -169,6 +204,8 @@ function printDryRun(article, env) {
     .replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
   log(`Объём статьи: примерно ${words} слов`);
   log('');
+  printSocialSummary(article.social);
+  log('');
   log('DRY RUN OK — картинки и файлы не создавались.');
 }
 
@@ -183,8 +220,9 @@ async function main() {
   if (!topic) throw new Error('Тема статьи не задана.');
   done(`Topic received: ${topic}`);
 
-  const [systemPrompt, imageStyle, template, blogIndexTemplate, homeTeaserTemplate] = await Promise.all([
+  const [systemPrompt, socialPrompt, imageStyle, template, blogIndexTemplate, homeTeaserTemplate] = await Promise.all([
     readTextFile(PATHS.systemPrompt, 'system prompt'),
+    readTextFile(PATHS.socialPrompt, 'требования к соцсетям'),
     readTextFile(PATHS.imageStyle, 'image style guide'),
     readTextFile(PATHS.template, 'шаблон статьи'),
     readTextFile(PATHS.blogIndexTemplate, 'шаблон страницы блога'),
@@ -198,7 +236,7 @@ async function main() {
   const article = await generateArticle({
     client,
     model: env.textModel,
-    systemPrompt,
+    systemPrompt: `${systemPrompt}\n\n${socialPrompt}`,
     topic,
     log,
   });
@@ -216,6 +254,7 @@ async function main() {
   log('');
 
   const targetDir = path.join(PATHS.blogDir, article.slug);
+  const sourceFile = sourceStore.sourcePath(PATHS.contentBlogDir, article.slug);
   if (await exists(targetDir)) {
     const answer = await ask(
       'Article already exists.\nOverwrite? (y/N) ',
@@ -233,7 +272,10 @@ async function main() {
   // в public/blog не остаётся полусозданной статьи.
   const tmpDir = path.join(PATHS.blogDir, `.tmp-${article.slug}-${process.pid}`);
   const backupDir = `${targetDir}.backup-${process.pid}`;
+  const sourceBackup = `${sourceFile}.backup-${process.pid}`;
   let backedUp = false;
+  let sourceBackedUp = false;
+  let sourceWritten = false;
   let published = false;
 
   try {
@@ -253,23 +295,39 @@ async function main() {
       done(`${imagePrompt.file} — ${info.width}×${info.height}, ${Math.round(info.bytes / 1024)} КБ`);
     }
 
+    // Источник собираем здесь: текст сгенерирован и проверен, картинки уже
+    // лежат в tmpDir. Дальше и страница, и post.json строятся только из него —
+    // ровно так же, как их потом соберёт blog:rebuild.
     const dates = render.formatDates();
+    const source = sourceStore.buildSource({ article, topic, dates });
+    const problems = sourceStore.validateSource(source, `content/blog/${article.slug}.json`);
+    if (problems.length > 0) {
+      throw new Error(`Источник статьи получился невалидным:\n  - ${problems.join('\n  - ')}`);
+    }
+
     const html = render.renderArticleHtml({
-      article,
+      source,
       template,
       siteUrl: env.siteUrl,
       appUrl: env.appUrl,
-      dates,
     });
     await fs.writeFile(path.join(tmpDir, 'index.html'), html);
     done('index.html created');
 
-    const post = render.buildPost({ article, dates });
+    const post = render.buildPost({ source });
     await fs.writeFile(path.join(tmpDir, 'post.json'), `${JSON.stringify(post, null, 2)}\n`);
     done('post.json created');
 
     // Переносим готовую папку на место одним движением; старую версию сначала
     // отодвигаем в сторону, чтобы можно было вернуть при сбое.
+    if (await exists(sourceFile)) {
+      await fs.rename(sourceFile, sourceBackup);
+      sourceBackedUp = true;
+    }
+    await sourceStore.writeSourceAtomic(sourceFile, source);
+    sourceWritten = true;
+    done(`content/blog/${article.slug}.json created`);
+
     if (await exists(targetDir)) {
       await fs.rename(targetDir, backupDir);
       backedUp = true;
@@ -312,6 +370,7 @@ async function main() {
     done('sitemap updated');
 
     if (backedUp) await fs.rm(backupDir, { recursive: true, force: true });
+    if (sourceBackedUp) await fs.rm(sourceBackup, { force: true });
 
     log('');
     log('DONE');
@@ -320,11 +379,20 @@ async function main() {
     log(`http://localhost:3000/blog/${article.slug}/`);
     log(`${env.siteUrl}/blog/${article.slug}/`);
     log('');
-    log('Посты для соцсетей лежат в post.json (telegram_post, threads_post).');
+    log('Контент-пакет для соцсетей (telegram, threads, instagram, vk, short_video) —');
+    log(`в поле social файла content/blog/${article.slug}.json.`);
+    log(`Исходник статьи для правок: content/blog/${article.slug}.json (после правки — npm run blog:rebuild).`);
   } catch (err) {
     // Возвращаем предыдущую версию статьи, если успели её отодвинуть.
     if (backedUp && !(await exists(targetDir))) {
       await fs.rename(backupDir, targetDir).catch(() => {});
+    }
+    // Источник откатываем, только если статья до public/blog не доехала. Если
+    // страница уже на месте, источник ей нужен: тогда доделать индекс и sitemap
+    // можно бесплатным npm run blog:rebuild, без повторного вызова OpenAI.
+    if (!published) {
+      if (sourceWritten) await fs.rm(sourceFile, { force: true }).catch(() => {});
+      if (sourceBackedUp) await fs.rename(sourceBackup, sourceFile).catch(() => {});
     }
     // Подсказка для финального сообщения: успели ли мы положить статью на место.
     err.published = published;
@@ -343,11 +411,12 @@ main().catch((err) => {
   console.error('');
   if (err.published) {
     console.error(
-      `Файлы статьи уже лежат в public/blog/${err.slug}/, но индекс блога и sitemap.xml ` +
-      'могли не обновиться. Перезапустите генерацию (ответьте y на вопрос о перезаписи).'
+      `Файлы статьи уже лежат в public/blog/${err.slug}/, исходник — в content/blog/${err.slug}.json, ` +
+      'но индекс блога и sitemap.xml могли не обновиться.\n' +
+      'Доделайте бесплатно, без повторного обращения к OpenAI: npm run blog:rebuild'
     );
   } else {
-    console.error('Ничего не записано: статья, index.json и sitemap.xml не изменены.');
+    console.error('Ничего не записано: статья, исходник, index.json и sitemap.xml не изменены.');
   }
   process.exitCode = 1;
 });

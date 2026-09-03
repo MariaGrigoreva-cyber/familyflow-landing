@@ -39,6 +39,12 @@ const MONTHS_RU = [
   'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
 ];
 
+function datesFromIso(iso) {
+  const [year, month, day] = String(iso).split('-').map(Number);
+  if (!year || !month || !day) throw new Error(`Ожидалась дата вида YYYY-MM-DD, получено «${iso}»`);
+  return { iso: String(iso), human: `${day} ${MONTHS_RU[month - 1]} ${year}` };
+}
+
 function formatDates(date = new Date()) {
   const iso = [
     date.getFullYear(),
@@ -76,32 +82,39 @@ function assertValidJsonLd(html) {
   }
 }
 
-function renderArticleHtml({ article, template, siteUrl, appUrl, dates }) {
-  const [hero, inside1, inside2] = article.image_prompts;
+// Единственный путь сборки страницы статьи: и генератор, и blog:rebuild зовут
+// её с одним и тем же источником, поэтому пересборка даёт байт в байт тот же
+// HTML. Существующий public/blog/<slug>/index.html при этом не читается.
+function renderArticleHtml({ source, template, siteUrl, appUrl }) {
+  const [hero, inside1, inside2] = source.images;
+  const dates = datesFromIso(source.published_at || source.created_at);
 
-  const body = fillTemplate(sanitizeArticleHtml(article.article_html), {
-    INSIDE_IMAGE_1: figure('inside-1.webp', inside1.alt),
-    INSIDE_IMAGE_2: figure('inside-2.webp', inside2.alt),
+  // Санитайз повторяем, хотя в источнике HTML уже очищен: файл редактируют
+  // руками, и правка не должна открывать дорогу script/onclick. Операция
+  // идемпотентна, на уже очищенном HTML ничего не меняет.
+  const body = fillTemplate(sanitizeArticleHtml(source.article_html), {
+    INSIDE_IMAGE_1: figure(inside1.file, inside1.alt),
+    INSIDE_IMAGE_2: figure(inside2.file, inside2.alt),
   });
 
-  const canonical = `${siteUrl}/blog/${article.slug}/`;
-  const ogImage = `${siteUrl}/blog/${article.slug}/hero.webp`;
+  const canonical = `${siteUrl}/blog/${source.slug}/`;
+  const ogImage = `${siteUrl}/blog/${source.slug}/${hero.file}`;
 
   const html = fillTemplate(template, {
-    SEO_TITLE: escapeHtml(article.seo_title),
-    SEO_DESCRIPTION: escapeHtml(article.seo_description),
-    SEO_DESCRIPTION_JSON: escapeJsonString(article.seo_description),
+    SEO_TITLE: escapeHtml(source.seo_title),
+    SEO_DESCRIPTION: escapeHtml(source.seo_description),
+    SEO_DESCRIPTION_JSON: escapeJsonString(source.seo_description),
     CANONICAL_URL: escapeHtml(canonical),
     OG_IMAGE: escapeHtml(ogImage),
-    TITLE: escapeHtml(article.title),
-    TITLE_JSON: escapeJsonString(article.title),
-    EXCERPT: escapeHtml(article.excerpt),
+    TITLE: escapeHtml(source.title),
+    TITLE_JSON: escapeJsonString(source.title),
+    EXCERPT: escapeHtml(source.excerpt),
     DATE_ISO: dates.iso,
     DATE_HUMAN: escapeHtml(dates.human),
     HERO_ALT: escapeHtml(hero.alt),
     ARTICLE_HTML: body,
-    CTA_TITLE: escapeHtml(article.cta_title),
-    CTA_TEXT: escapeHtml(article.cta_text),
+    CTA_TITLE: escapeHtml(source.cta.title),
+    CTA_TEXT: escapeHtml(source.cta.text),
     APP_URL: escapeHtml(appUrl),
   });
 
@@ -109,21 +122,23 @@ function renderArticleHtml({ article, template, siteUrl, appUrl, dates }) {
   return html;
 }
 
-function buildPost({ article, dates }) {
-  const [hero] = article.image_prompts;
+// post.json — компактная публичная метаинформация, без article_html: полный
+// текст живёт в content/blog/<slug>.json и наружу не отдаётся.
+function buildPost({ source }) {
+  const [hero] = source.images;
   return {
-    title: article.title,
-    seo_title: article.seo_title,
-    seo_description: article.seo_description,
-    slug: article.slug,
-    excerpt: article.excerpt,
-    keywords: article.keywords,
-    date: dates.iso,
-    url: `/blog/${article.slug}/`,
-    hero: `/blog/${article.slug}/hero.webp`,
+    title: source.title,
+    seo_title: source.seo_title,
+    seo_description: source.seo_description,
+    slug: source.slug,
+    excerpt: source.excerpt,
+    keywords: source.keywords,
+    date: source.published_at || source.created_at,
+    url: `/blog/${source.slug}/`,
+    hero: `/blog/${source.slug}/${hero.file}`,
     hero_alt: hero.alt,
-    telegram_post: article.telegram_post,
-    threads_post: article.threads_post,
+    telegram_post: source.social.telegram,
+    threads_post: source.social.threads,
   };
 }
 
@@ -249,6 +264,7 @@ module.exports = {
   escapeHtml,
   escapeJsonString,
   formatDates,
+  datesFromIso,
   fillTemplate,
   renderArticleHtml,
   buildPost,

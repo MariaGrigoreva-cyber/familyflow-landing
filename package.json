@@ -6,7 +6,13 @@
   "scripts": {
     "start": "node server.js",
     "blog": "node scripts/generate-blog.js",
-    "blog:rebuild": "node scripts/rebuild-blog.js"
+    "blog:rebuild": "node scripts/rebuild-blog.js",
+    "blog:migrate": "node scripts/migrate-blog-source.js",
+    "blog:social": "node scripts/blog-social.js",
+    "blog:queue": "node scripts/blog-queue.js",
+    "blog:next": "node scripts/blog-queue.js --next",
+    "content:today": "node scripts/content-today.js",
+    "content:mark": "node scripts/content-mark.js"
   },
   "dependencies": {
     "compression": "^1.8.1",

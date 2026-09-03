@@ -1,16 +1,16 @@
 #!/usr/bin/env node
-// Пересборка статических страниц блога из уже сохранённых данных.
+// Пересборка всей статики блога из источников content/blog/*.json.
 //
 //   npm run blog:rebuild
 //
-// Нужна после правки templates/blog-index.html, templates/home-teaser.html или
-// стилей карточек: уже сгенерированные страницы остаются старыми до следующего
-// прогона генератора, а гонять платный npm run blog ради вёрстки незачем.
+// Источник правды — content/blog/<slug>.json. Отсюда собираются страницы статей,
+// post.json, индекс блога, блок на главной и sitemap. Нужна после правки текста
+// статьи, шаблонов или вёрстки карточек — гонять платный npm run blog ради этого
+// незачем.
 //
 // Команда полностью офлайновая: не обращается к OpenAI, не требует
-// OPENAI_API_KEY, не генерирует картинки и ничего не удаляет.
-//
-// Источник правды — public/blog/index.json. Он и post.json только читаются.
+// OPENAI_API_KEY, не генерирует и не трогает картинки, ничего не удаляет и не
+// пишет в content/ — источники только читаются.
 'use strict';
 
 const fs = require('node:fs/promises');
@@ -28,6 +28,8 @@ try {
 }
 
 const render = require('./blog/render');
+const sourceStore = require('./blog/source');
+const { updateSitemapXml, readSitemap } = require('./blog/sitemap');
 
 const DEFAULTS = {
   SITE_URL: 'https://myfamilyflow.ru',
@@ -35,25 +37,25 @@ const DEFAULTS = {
 };
 
 const PATHS = {
+  articleTemplate: path.join(ROOT, 'templates', 'article.html'),
   blogIndexTemplate: path.join(ROOT, 'templates', 'blog-index.html'),
   homeTeaserTemplate: path.join(ROOT, 'templates', 'home-teaser.html'),
+  contentBlogDir: path.join(ROOT, 'content', 'blog'),
   blogDir: path.join(ROOT, 'public', 'blog'),
   blogIndexJson: path.join(ROOT, 'public', 'blog', 'index.json'),
   blogIndexHtml: path.join(ROOT, 'public', 'blog', 'index.html'),
   homeIndexHtml: path.join(ROOT, 'public', 'index.html'),
+  sitemap: path.join(ROOT, 'public', 'sitemap.xml'),
 };
 
-const log = (message) => console.log(message);
+const log = (message = '') => console.log(message);
 const step = (message) => console.log(`→ ${message}`);
 const done = (message) => console.log(`✓ ${message}`);
 const warn = (message) => console.log(`! ${message}`);
 
-const SLUG_RE = /^[a-z0-9-]+$/;
-// Поля, без которых карточку не нарисовать. hero_alt необязателен — рендер
-// подставит вместо него заголовок.
-const REQUIRED_FIELDS = ['title', 'slug', 'excerpt', 'date', 'url', 'hero'];
-
 class RebuildError extends Error {}
+
+const rel = (filePath) => path.relative(ROOT, filePath);
 
 async function readFileOrNull(filePath) {
   try {
@@ -66,117 +68,161 @@ async function readFileOrNull(filePath) {
 
 async function readTemplate(filePath, label) {
   const contents = await readFileOrNull(filePath);
-  if (contents === null) throw new RebuildError(`Не найден ${label}: ${path.relative(ROOT, filePath)}`);
+  if (contents === null) throw new RebuildError(`Не найден ${label}: ${rel(filePath)}`);
   return contents;
 }
 
-// Индекс читаем строго: на нём держатся и /blog/, и блок на главной, поэтому
-// при малейшем сомнении лучше не трогать ни один файл.
-async function readIndexJson() {
-  const raw = await readFileOrNull(PATHS.blogIndexJson);
-  if (raw === null) {
+const exists = (filePath) => fs.access(filePath).then(() => true, () => false);
+
+// Читаем и проверяем все источники разом. Одна битая статья останавливает всю
+// пересборку: лучше понятная ошибка, чем наполовину обновлённый блог.
+async function loadSources() {
+  const files = await sourceStore.listSourceFiles(PATHS.contentBlogDir);
+  if (files.length === 0) {
     throw new RebuildError(
-      'Нет public/blog/index.json — пересобирать нечего. Сначала сгенерируйте статью: npm run blog'
+      `Нет источников в ${rel(PATHS.contentBlogDir)}. Сгенерируйте статью (npm run blog) ` +
+      'или перенесите существующую (npm run blog:migrate).'
     );
   }
 
-  let parsed;
-  try {
-    parsed = JSON.parse(raw);
-  } catch (error) {
-    throw new RebuildError(`public/blog/index.json — битый JSON (${error.message}). Ничего не перезаписано.`);
+  const problems = [];
+  const sources = [];
+  const seenSlugs = new Map();
+
+  for (const file of files) {
+    const label = `content/blog/${path.basename(file)}`;
+    let source;
+    try {
+      source = await sourceStore.readSource(file);
+    } catch (error) {
+      problems.push(`${label}: ${error.message}`);
+      continue;
+    }
+
+    const found = sourceStore.validateSource(source, label);
+    problems.push(...found);
+    if (found.length > 0) continue;
+
+    // Имя файла — часть адреса статьи, рассинхрон с полем slug ловим сразу.
+    const expected = `${source.slug}.json`;
+    if (path.basename(file) !== expected) {
+      problems.push(`${label}: slug «${source.slug}» не совпадает с именем файла (ожидалось ${expected})`);
+      continue;
+    }
+    if (seenSlugs.has(source.slug)) {
+      problems.push(`${label}: slug «${source.slug}» уже встречался`);
+      continue;
+    }
+    seenSlugs.set(source.slug, file);
+    sources.push(source);
   }
 
-  if (!Array.isArray(parsed)) {
-    throw new RebuildError('public/blog/index.json должен быть массивом статей. Ничего не перезаписано.');
-  }
-  if (parsed.length === 0) {
+  if (problems.length > 0) {
     throw new RebuildError(
-      'public/blog/index.json пуст. Пустую страницу блога не собираю — сначала сгенерируйте статью: npm run blog'
+      `Источники не прошли проверку:\n  - ${problems.join('\n  - ')}\n\n` +
+      'Исправьте content/blog вручную — автоматически ничего не меняю. Ничего не перезаписано.'
     );
   }
 
-  parsed.forEach((post, i) => {
-    if (!post || typeof post !== 'object') {
-      throw new RebuildError(`index.json: элемент #${i + 1} — не объект. Ничего не перезаписано.`);
-    }
-    const missing = REQUIRED_FIELDS.filter((field) => typeof post[field] !== 'string' || !post[field].trim());
-    if (missing.length > 0) {
-      throw new RebuildError(
-        `index.json: у статьи #${i + 1} нет полей ${missing.join(', ')}. Ничего не перезаписано.`
-      );
-    }
-    if (!SLUG_RE.test(post.slug)) {
-      throw new RebuildError(`index.json: недопустимый slug «${post.slug}». Ничего не перезаписано.`);
-    }
-  });
-
-  const slugs = parsed.map((post) => post.slug);
-  const duplicate = slugs.find((slug, i) => slugs.indexOf(slug) !== i);
-  if (duplicate) {
-    throw new RebuildError(`index.json: slug «${duplicate}» встречается дважды. Ничего не перезаписано.`);
-  }
-
-  return parsed;
+  return sources;
 }
 
-// Страницу статьи из post.json собрать нельзя: там нет article_html, cta_title
-// и cta_text — то есть самого текста статьи, CTA и подписей внутренних
-// картинок. Достраивать их «по памяти» значило бы испортить готовые статьи,
-// поэтому мы только проверяем, что файлы на месте, и честно об этом пишем.
-async function inspectArticles(posts) {
-  const report = [];
+// Картинки — единственное, что пересборка сделать не может: их генерирует
+// платный npm run blog. Поэтому просто проверяем, что все файлы на месте.
+async function assertImagesPresent(sources) {
+  const missing = [];
 
-  for (const post of posts) {
-    const dir = path.join(PATHS.blogDir, post.slug);
-    const [pageExists, postJsonExists] = await Promise.all([
-      fs.access(path.join(dir, 'index.html')).then(() => true, () => false),
-      fs.access(path.join(dir, 'post.json')).then(() => true, () => false),
-    ]);
-    report.push({ slug: post.slug, pageExists, postJsonExists });
+  for (const source of sources) {
+    for (const image of source.images) {
+      const file = path.join(PATHS.blogDir, source.slug, image.file);
+      if (!(await exists(file))) missing.push(rel(file));
+    }
   }
 
-  return report;
+  if (missing.length > 0) {
+    throw new RebuildError(
+      `Не хватает изображений:\n  - ${missing.join('\n  - ')}\n\n` +
+      'Пересборка их не создаёт — это делает только npm run blog. Ничего не перезаписано.'
+    );
+  }
 }
+
+const byDateDesc = (a, b) => {
+  const left = a.published_at || a.created_at;
+  const right = b.published_at || b.created_at;
+  if (left === right) return a.slug.localeCompare(b.slug);
+  return right.localeCompare(left);
+};
 
 async function main() {
   const siteUrl = process.env.SITE_URL || DEFAULTS.SITE_URL;
   const appUrl = process.env.APP_URL || DEFAULTS.APP_URL;
 
-  step('Читаю public/blog/index.json...');
-  const posts = await readIndexJson();
-  done(`index.json прочитан: ${posts.length} ${posts.length === 1 ? 'статья' : 'статей'}`);
+  step(`Читаю источники из ${rel(PATHS.contentBlogDir)}...`);
+  const sources = await loadSources();
+  const published = sources.filter((source) => source.status === 'published').sort(byDateDesc);
+  const drafts = sources.filter((source) => source.status !== 'published');
 
-  const [blogIndexTemplate, homeTeaserTemplate] = await Promise.all([
+  done(`источников: ${sources.length} (published: ${published.length}, draft: ${drafts.length})`);
+  for (const draft of drafts) warn(`${draft.slug} — status: ${draft.status}, в публичные файлы не попадёт`);
+
+  if (published.length === 0) {
+    throw new RebuildError('Ни одного источника со статусом published — публиковать нечего. Ничего не перезаписано.');
+  }
+
+  const [articleTemplate, blogIndexTemplate, homeTeaserTemplate] = await Promise.all([
+    readTemplate(PATHS.articleTemplate, 'шаблон статьи'),
     readTemplate(PATHS.blogIndexTemplate, 'шаблон страницы блога'),
     readTemplate(PATHS.homeTeaserTemplate, 'шаблон блока для главной'),
   ]);
 
-  const articles = await inspectArticles(posts);
-  for (const article of articles) {
-    if (!article.pageExists) warn(`нет public/blog/${article.slug}/index.html — ссылка с /blog/ приведёт в 404`);
-    else if (!article.postJsonExists) warn(`нет public/blog/${article.slug}/post.json`);
-  }
+  await assertImagesPresent(published);
 
-  // Сначала рендерим всё в память и только потом пишем: так ошибка рендера не
-  // оставит главную с пересобранным блоком при старой странице блога.
+  // Сначала рендерим всё в память и только потом пишем: ошибка на середине не
+  // оставит блог в смешанном состоянии из старых и новых файлов.
+  const pages = published.map((source) => ({
+    slug: source.slug,
+    dir: path.join(PATHS.blogDir, source.slug),
+    html: render.renderArticleHtml({ source, template: articleTemplate, siteUrl, appUrl }),
+    post: render.buildPost({ source }),
+  }));
+
+  const index = pages.map((page) => render.buildIndexEntry(page.post));
   const blogIndexHtml = render.renderBlogIndexHtml({
-    posts,
+    posts: index,
     template: blogIndexTemplate,
     siteUrl,
     appUrl,
   });
 
   const homeHtml = await readFileOrNull(PATHS.homeIndexHtml);
-  if (homeHtml === null) throw new RebuildError('Не найден public/index.html');
-
+  if (homeHtml === null) throw new RebuildError(`Не найден ${rel(PATHS.homeIndexHtml)}`);
   const updatedHome = render.replaceHomeTeaser(
     homeHtml,
-    render.renderHomeTeaser({ posts, template: homeTeaserTemplate })
+    render.renderHomeTeaser({ posts: index, template: homeTeaserTemplate })
   );
 
-  // Обе записи атомарные (временный файл + rename), так что оборваться на
-  // полпути внутри файла невозможно.
+  const sitemapEntries = [
+    { loc: `${siteUrl}/blog/`, lastmod: index[0].date },
+    ...published.map((source) => ({
+      loc: `${siteUrl}/blog/${source.slug}/`,
+      lastmod: source.published_at || source.created_at,
+    })),
+  ];
+  const sitemap = updateSitemapXml(await readSitemap(PATHS.sitemap), sitemapEntries);
+
+  // Записи атомарные (временный файл + rename), поэтому оборваться на середине
+  // внутри файла невозможно.
+  for (const page of pages) {
+    await fs.mkdir(page.dir, { recursive: true });
+    await render.writeFileAtomic(path.join(page.dir, 'index.html'), page.html);
+    await render.writeFileAtomic(path.join(page.dir, 'post.json'), `${JSON.stringify(page.post, null, 2)}\n`);
+    done(`public/blog/${page.slug}/ — index.html и post.json пересобраны`);
+  }
+
+  await render.writeFileAtomic(PATHS.blogIndexJson, `${JSON.stringify(index, null, 2)}\n`);
+  done(`public/blog/index.json пересобран (${index.length} ${index.length === 1 ? 'статья' : 'статей'})`);
+
   await render.writeFileAtomic(PATHS.blogIndexHtml, blogIndexHtml);
   done('public/blog/index.html пересобран');
 
@@ -189,15 +235,8 @@ async function main() {
     done('блок «Полезное о семейных финансах» на главной пересобран');
   }
 
-  const skipped = articles.filter((article) => article.pageExists);
-  if (skipped.length > 0) {
-    log('');
-    log(
-      `Страницы статей не пересобирались (${skipped.length} шт.): в post.json нет article_html, ` +
-        'cta_title и cta_text, а без них статью не собрать из шаблона. Чтобы обновить саму ' +
-        'статью, нужен полный прогон: npm run blog'
-    );
-  }
+  await render.writeFileAtomic(PATHS.sitemap, sitemap);
+  done('public/sitemap.xml обновлён');
 
   log('');
   log('DONE');
