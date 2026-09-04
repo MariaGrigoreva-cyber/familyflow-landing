@@ -12,7 +12,8 @@
     "blog:queue": "node scripts/blog-queue.js",
     "blog:next": "node scripts/blog-queue.js --next",
     "content:today": "node scripts/content-today.js",
-    "content:mark": "node scripts/content-mark.js"
+    "content:mark": "node scripts/content-mark.js",
+    "instagram:carousel": "node scripts/instagram-carousel.js"
   },
   "dependencies": {
     "compression": "^1.8.1",
