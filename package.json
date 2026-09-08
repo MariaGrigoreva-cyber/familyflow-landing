@@ -13,9 +13,13 @@
     "blog:next": "node scripts/blog-queue.js --next",
     "content:today": "node scripts/content-today.js",
     "content:mark": "node scripts/content-mark.js",
-    "instagram:carousel": "node scripts/instagram-carousel.js"
+    "instagram:carousel": "node scripts/instagram-carousel.js",
+    "reels": "node scripts/reels.js",
+    "reels:motion": "node scripts/reels-motion.js",
+    "reels:motion:legacy": "node scripts/reels-motion-legacy.js"
   },
   "dependencies": {
+    "@remotion/google-fonts": "^4.0.520",
     "compression": "^1.8.1",
     "express": "^4.19.2"
   },
@@ -23,8 +27,12 @@
     "node": ">=18"
   },
   "devDependencies": {
+    "@remotion/cli": "^4.0.520",
     "dotenv": "^17.4.2",
     "openai": "^7.8.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "remotion": "^4.0.520",
     "sanitize-html": "^2.17.7",
     "sharp": "^0.35.4"
   }

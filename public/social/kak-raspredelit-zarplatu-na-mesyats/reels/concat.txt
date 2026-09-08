@@ -1,0 +1,6 @@
+file '/Users/slizova_ms/Downloads/familyflow-landing/public/social/kak-raspredelit-zarplatu-na-mesyats/reels/clips/01.mp4'
+file '/Users/slizova_ms/Downloads/familyflow-landing/public/social/kak-raspredelit-zarplatu-na-mesyats/reels/clips/02.mp4'
+file '/Users/slizova_ms/Downloads/familyflow-landing/public/social/kak-raspredelit-zarplatu-na-mesyats/reels/clips/03.mp4'
+file '/Users/slizova_ms/Downloads/familyflow-landing/public/social/kak-raspredelit-zarplatu-na-mesyats/reels/clips/04.mp4'
+file '/Users/slizova_ms/Downloads/familyflow-landing/public/social/kak-raspredelit-zarplatu-na-mesyats/reels/clips/05.mp4'
+file '/Users/slizova_ms/Downloads/familyflow-landing/public/social/kak-raspredelit-zarplatu-na-mesyats/reels/clips/06.mp4'
