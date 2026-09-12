@@ -3,21 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Блог — Семейный поток</title>
-<meta name="description" content="Как планировать семейные деньги заранее: зарплата, обязательные платежи, крупные покупки и накопления — без сложных таблиц и жёсткой экономии.">
-<link rel="canonical" href="{{CANONICAL_URL}}">
+<title>Финансовые калькуляторы бесплатно — Семейный поток</title>
+<meta name="description" content="Бесплатные калькуляторы «Семейный поток»: рассчитайте, сколько денег можно тратить, как распределить зарплату и оценить финансовые возможности семьи.">
+<link rel="canonical" href="https://myfamilyflow.ru/tools/">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png">
 <link rel="icon" type="image/png" sizes="48x48" href="/icons/icon-48.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{CANONICAL_URL}}">
-<meta property="og:title" content="Блог — Семейный поток">
-<meta property="og:description" content="Как планировать семейные деньги заранее: зарплата, обязательные платежи, крупные покупки и накопления.">
+<meta property="og:url" content="https://myfamilyflow.ru/tools/">
+<meta property="og:title" content="Финансовые калькуляторы бесплатно — Семейный поток">
+<meta property="og:description" content="Бесплатные калькуляторы «Семейный поток»: рассчитайте, сколько денег можно тратить, как распределить зарплату и оценить финансовые возможности семьи.">
 <meta property="og:image" content="https://myfamilyflow.ru/icons/icon-192.png">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:site_name" content="Семейный поток">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Финансовые калькуляторы бесплатно — Семейный поток">
+<meta name="twitter:description" content="Бесплатные калькуляторы «Семейный поток»: рассчитайте, сколько денег можно тратить, как распределить зарплату и оценить финансовые возможности семьи.">
+<meta name="twitter:image" content="https://myfamilyflow.ru/icons/icon-192.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,23 +74,41 @@ try { if (/(?:^|; )ff_cookie_consent=accepted(?:;|$)/.test(document.cookie)) win
     </a>
     <div class="nav-links">
       <a href="/">На главную</a>
-      <a href="{{APP_URL}}" rel="nofollow" class="btn btn-primary"><span class="cta-full">Попробовать бесплатно</span><span class="cta-short">Бесплатно</span></a>
+      <a href="/blog/">Блог</a>
+      <a href="https://app.myfamilyflow.ru" rel="nofollow" class="btn btn-primary"><span class="cta-full">Попробовать бесплатно</span><span class="cta-short">Бесплатно</span></a>
     </div>
   </div>
 </nav>
 
-<section class="section article-section blog-index-section">
+<section class="section article-section tools-index-section">
   <div class="container">
-    <div class="eyebrow">ДЕНЬГИ БЕЗ СТРЕССА</div>
-    <h1 class="article-title">Блог Семейного потока</h1>
+
+    <nav class="breadcrumbs" aria-label="Вы находитесь здесь">
+      <a href="/">Главная</a>
+      <span aria-hidden="true">/</span>
+      <span>Инструменты</span>
+    </nav>
+
+    <div class="eyebrow">ИНСТРУМЕНТЫ</div>
+    <h1 class="article-title">Бесплатные финансовые инструменты</h1>
     <p class="section-lead">
-      Как планировать семейные деньги заранее, а не разбираться с ними задним числом:
-      зарплата, обязательные платежи, крупные покупки и спокойные накопления.
+      Небольшие калькуляторы для обычных денежных вопросов: сколько можно тратить,
+      что уже занято будущими платежами и сколько остаётся свободным. Без регистрации,
+      всё считается прямо в браузере — введённые суммы никуда не отправляются.
     </p>
 
-    <div class="{{GRID_CLASS}}">
-{{CARDS}}
+    <!-- Каталог. Новый инструмент = новая папка public/tools/<slug>/index.html
+         плюс карточка ниже. Следующие на очереди: raspredelit-zarplatu,
+         mogu-li-pozvolit-pokupku, finansovaya-podushka, skolko-otkladyvat,
+         ipoteka. -->
+    <div class="tools-grid">
+      <article class="tool-card">
+        <h2 class="tool-card-title">Сколько можно тратить до зарплаты</h2>
+        <p>Узнайте, сколько денег действительно свободно после обязательных расходов и финансового запаса.</p>
+        <a class="btn btn-primary" href="/tools/skolko-mozhno-tratit-do-zarplaty/">Рассчитать</a>
+      </article>
     </div>
+
   </div>
 </section>
 
@@ -99,8 +122,8 @@ try { if (/(?:^|; )ff_cookie_consent=accepted(?:;|$)/.test(document.cookie)) win
     </div>
     <div class="footer-links">
       <a href="/">На главную</a>
-      <a href="/tools/">Калькуляторы</a>
-      <a href="{{APP_URL}}" rel="nofollow">Приложение</a>
+      <a href="/blog/">Блог</a>
+      <a href="https://app.myfamilyflow.ru" rel="nofollow">Приложение</a>
       <a href="/privacy.html">Политика конфиденциальности</a>
       <a href="/terms.html">Пользовательское соглашение</a>
       <a href="https://t.me/myfamilyflow" target="_blank" rel="noopener">Читать в Telegram</a>

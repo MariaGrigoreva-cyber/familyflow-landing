@@ -21,6 +21,18 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://myfamilyflow.ru/tools/</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://myfamilyflow.ru/tools/skolko-mozhno-tratit-do-zarplaty/</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://myfamilyflow.ru/blog/</loc>
     <lastmod>2026-09-11</lastmod>
   </url>
