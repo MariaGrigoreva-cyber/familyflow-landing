@@ -91,6 +91,33 @@ window.ffCalcCore = (function initCalcCore() {
     'too-big': 'Сумма выглядит слишком большой — проверьте, не лишний ли разряд.',
   };
 
+  const MAX_DAYS = 365;
+
+  // Разбор срока «через сколько дней следующий доход». «12 дней» понимаем
+  // наравне с «12»: поле подписано так же. Ноль, минус и больше года — ошибки.
+  function parseDays(raw) {
+    const text = String(raw).trim();
+    if (text === '') return { status: 'empty' };
+    if (LEADING_MINUS.test(text)) return { status: 'negative' };
+
+    const compact = text.replace(/(?:дней|дня|день|дн\.?)$/i, '').replace(SPACES, '');
+    if (compact === '') return { status: 'invalid' };
+    if (!/^\d+$/.test(compact)) return { status: 'invalid' };
+
+    const value = Number(compact);
+    if (!Number.isSafeInteger(value)) return { status: 'too-big' };
+    if (value < 1) return { status: 'zero' };
+    if (value > MAX_DAYS) return { status: 'too-big' };
+    return { status: 'ok', value };
+  }
+
+  const DAYS_ERRORS = {
+    negative: 'Количество дней не может быть отрицательным.',
+    invalid: 'Введите количество дней цифрами.',
+    zero: 'Дней должно быть хотя бы один — укажите 1, если доход придёт завтра.',
+    'too-big': `Укажите срок не больше ${MAX_DAYS} дней — для более далёких планов калькулятор не подойдёт.`,
+  };
+
   // Разряды расставляем на лету только тогда, когда во введённом нет ничего,
   // кроме цифр и пробелов. Если человек написал «-5000» или «абв» — оставляем
   // строку ровно такой, какой он её видит, и говорим об ошибке при расчёте.
@@ -196,6 +223,7 @@ window.ffCalcCore = (function initCalcCore() {
     track, markAttribution,
     groupDigits, fmtNum, rub, plural, rubWords,
     parseMoney, MONEY_ERRORS,
+    MAX_DAYS, parseDays, DAYS_ERRORS,
     clearError, showError, bindInput,
     collectFields, readField,
     breakdownRow, revealResult,

@@ -25,36 +25,12 @@
   const { MINUS, rub, rubWords, breakdownRow } = core;
 
   const CALCULATOR = 'daily_spending';
-  const MAX_DAYS = 365;
   // Ниже этого дневного ориентира добавляем мягкую оговорку. Ни красного цвета,
   // ни предупреждающих иконок: человек и так видит небольшую сумму.
   const LOW_DAILY = 500;
 
-  // Разбор срока. «12 дней» понимаем наравне с «12»: поле подписано так же.
-  // Денежные поля разбирает общий parseMoney из /tools/calc-core.js.
-  function parseDays(raw) {
-    const text = String(raw).trim();
-    if (text === '') return { status: 'empty' };
-    if (core.LEADING_MINUS.test(text)) return { status: 'negative' };
-
-    const compact = text.replace(/(?:дней|дня|день|дн\.?)$/i, '').replace(core.SPACES, '');
-    if (compact === '') return { status: 'invalid' };
-    if (!/^\d+$/.test(compact)) return { status: 'invalid' };
-
-    const value = Number(compact);
-    if (!Number.isSafeInteger(value)) return { status: 'too-big' };
-    if (value < 1) return { status: 'zero' };
-    if (value > MAX_DAYS) return { status: 'too-big' };
-    return { status: 'ok', value };
-  }
-
-  const DAYS_ERRORS = {
-    negative: 'Количество дней не может быть отрицательным.',
-    invalid: 'Введите количество дней цифрами.',
-    zero: 'Дней должно быть хотя бы один — укажите 1, если доход придёт завтра.',
-    'too-big': `Укажите срок не больше ${MAX_DAYS} дней — для более далёких планов калькулятор не подойдёт.`,
-  };
-
+  // Денежные поля и срок разбирают общие parseMoney / parseDays из
+  // /tools/calc-core.js.
   const fields = core.collectFields({
     money: {
       kind: 'money', required: true, inputId: 'calcMoney', errorId: 'calcMoneyError',
@@ -62,7 +38,7 @@
     },
     days: {
       kind: 'days', required: true, inputId: 'calcDays', errorId: 'calcDaysError',
-      parse: parseDays, errors: DAYS_ERRORS,
+      parse: core.parseDays, errors: core.DAYS_ERRORS,
       emptyError: 'Укажите, через сколько дней ожидается следующий доход.',
     },
     mandatory: { kind: 'money', required: false, inputId: 'calcMandatory', errorId: 'calcMandatoryError' },
