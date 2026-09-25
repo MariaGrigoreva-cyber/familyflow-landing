@@ -26,6 +26,41 @@ async function fetchImageBuffer(client, { model, prompt, sizes }) {
 
   for (const size of sizes) {
     try {
+      // GPT image-модели — через streaming с partial_images: без них сервер молчит
+      // до готовой картинки, и VPN рвёт соединение (~21.5 с, bytesRead: 0).
+      // Промежуточные кадры игнорируем, в файл идёт только completed.
+      // maxRetries: 0 только здесь — при обрыве SDK не должен молча запускать
+      // ещё две платные генерации.
+      if (/^gpt-image/.test(model)) {
+        // ВРЕМЕННАЯ ТЕЛЕМЕТРИЯ (BLOG_IMAGE_DEBUG=1): тайминги и цепочка cause, без ключа и base64.
+        const t0 = Date.now();
+        const dbg = (msg) => { if (process.env.BLOG_IMAGE_DEBUG) console.error(`  [img ${((Date.now() - t0) / 1000).toFixed(2)}s] ${msg}`); };
+        dbg(`images.generate() model=${model} size=${size} stream=true partial_images=2 maxRetries=0 prompt=${prompt.length} симв.`);
+        try {
+        const stream = await client.images.generate({ model, prompt, size, n: 1, stream: true, partial_images: 2 }, { maxRetries: 0 });
+        dbg(`stream получен (HTTP-заголовки пришли): ${stream?.constructor?.name}, asyncIterable=${typeof stream?.[Symbol.asyncIterator] === 'function'}`);
+        let b64 = null;
+        for await (const event of stream) {
+          dbg(`event ${event.type}${event.b64_json ? ` (b64 ${Math.round(event.b64_json.length / 1024)} КБ)` : ''}`);
+          if (event.type === 'image_generation.completed') b64 = event.b64_json;
+        }
+        dbg(`поток закрыт, completed=${Boolean(b64)}`);
+        if (!b64) throw new Error('поток Images API завершился без итогового изображения');
+        return Buffer.from(b64, 'base64');
+        } catch (err) {
+          if (process.env.BLOG_IMAGE_DEBUG) {
+            dbg('ОШИБКА, цепочка cause:');
+            for (let e = err, d = 0; e && d < 8; e = e.cause, d += 1) {
+              const f = {};
+              for (const k of ['name', 'message', 'code', 'status', 'errno', 'syscall', 'requestID']) if (e[k] !== undefined) f[k] = e[k];
+              if (e.socket) f.socket = e.socket;
+              console.error(`    [${d}] ${e.constructor?.name}: ${JSON.stringify(f).replace(/sk-[A-Za-z0-9_-]{8,}/g, 'sk-<redacted>')}`);
+            }
+          }
+          throw err;
+        }
+      }
+
       const result = await client.images.generate({ model, prompt, size, n: 1 });
       const image = result?.data?.[0];
 

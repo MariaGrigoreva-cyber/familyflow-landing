@@ -192,13 +192,49 @@ async function callModel(client, model, input, { structured, schema = SCHEMA, sc
       : { format: { type: 'json_object' } },
   };
 
-  const response = await client.responses.create(params);
+  // Streaming: данные идут по соединению во время генерации, поэтому длинный
+  // запрос не рвётся на простое (VPN закрывает «молчащие» сокеты ~через 21 с).
+  // Берём сырые события, а не хелпер responses.stream(): тот сам делает
+  // JSON.parse для json_schema и бросает SyntaxError раньше, чем parseJson()
+  // и повторная попытка в askModel() успеют отработать.
+  const stream = await client.responses.create({ ...params, stream: true });
 
+  let response = null;
+  let deltas = '';
+  for await (const event of stream) {
+    switch (event.type) {
+      case 'response.output_text.delta':
+        deltas += event.delta;
+        break;
+      case 'response.completed':
+      case 'response.incomplete':
+      case 'response.failed':
+        response = event.response;
+        break;
+      case 'error':
+        throw new Error(`Ошибка потока OpenAI: ${event.message || event.code || 'неизвестно'}`);
+      default:
+        break;
+    }
+  }
+
+  if (!response) throw new Error('Поток OpenAI оборвался до завершения ответа');
+  if (response.status === 'failed') {
+    throw new Error(`Модель завершила ответ с ошибкой: ${response.error?.message || 'неизвестно'}`);
+  }
   if (response.status === 'incomplete') {
     const reason = response.incomplete_details?.reason || 'неизвестно';
     throw new Error(`Модель не закончила ответ (причина: ${reason}). Попробуйте более узкую тему.`);
   }
-  const text = response.output_text;
+
+  // output_text в событиях нет — собираем его так же, как SDK: склеиваем все
+  // output_text-части сообщений. Дельты — запасной вариант.
+  const text = (response.output || [])
+    .filter((item) => item.type === 'message')
+    .flatMap((item) => item.content || [])
+    .filter((part) => part.type === 'output_text')
+    .map((part) => part.text)
+    .join('') || deltas;
   if (!text) throw new Error('Модель вернула пустой ответ');
   return text;
 }
